@@ -83,11 +83,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    // Set a timeout to stop loading after 3 seconds if Firebase doesn't initialize
+    // Check if Firebase is configured - if not, stop loading immediately
+    const isConfigured = !!(
+      process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
+      process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    );
+
+    if (!isConfigured) {
+      console.warn('⚠️ Firebase not configured - skipping auth initialization');
+      setLoading(false);
+      return;
+    }
+
+    // Set a short timeout to stop loading after 500ms if Firebase doesn't respond
     const loadingTimeout = setTimeout(() => {
       console.warn('Firebase initialization timeout - setting loading to false');
       setLoading(false);
-    }, 3000);
+    }, 500);
 
     try {
       const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
