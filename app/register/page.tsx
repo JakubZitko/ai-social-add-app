@@ -16,6 +16,13 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [firebaseConfigured, setFirebaseConfigured] = useState(true);
+
+  useEffect(() => {
+    // Check if Firebase is configured
+    const isConfigured = !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+    setFirebaseConfigured(isConfigured);
+  }, []);
 
   useEffect(() => {
     if (user && !authLoading) {
@@ -91,6 +98,16 @@ export default function RegisterPage() {
 
         {/* Card */}
         <div className="bg-white rounded-lg shadow-xl p-8">
+          {!firebaseConfigured && (
+            <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <p className="text-sm font-semibold text-yellow-800 mb-1">⚠️ Firebase Not Configured</p>
+              <p className="text-xs text-yellow-700">
+                Authentication won't work until you set up your .env.local file.
+                See <code className="bg-yellow-100 px-1 rounded">ENVIRONMENT_SETUP.md</code> for instructions.
+              </p>
+            </div>
+          )}
+
           {error && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
               <p className="text-sm text-red-600">{error}</p>

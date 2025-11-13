@@ -12,6 +12,14 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
+// Check if Firebase config is complete
+const isConfigValid = Object.values(firebaseConfig).every(value => value !== undefined);
+
+if (!isConfigValid && typeof window !== 'undefined') {
+  console.error('❌ Firebase configuration is incomplete. Please set up your .env.local file.');
+  console.log('📝 See ENVIRONMENT_SETUP.md for detailed instructions');
+}
+
 // Initialize Firebase
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 

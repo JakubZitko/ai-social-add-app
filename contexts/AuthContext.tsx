@@ -83,20 +83,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      setFirebaseUser(firebaseUser);
-
-      if (firebaseUser) {
-        const userData = await createUserDocument(firebaseUser);
-        setUser(userData);
-      } else {
-        setUser(null);
-      }
-
+    // Set a timeout to stop loading after 3 seconds if Firebase doesn't initialize
+    const loadingTimeout = setTimeout(() => {
+      console.warn('Firebase initialization timeout - setting loading to false');
       setLoading(false);
-    });
+    }, 3000);
 
-    return () => unsubscribe();
+    try {
+      const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+        clearTimeout(loadingTimeout);
+        setFirebaseUser(firebaseUser);
+
+        if (firebaseUser) {
+          try {
+            const userData = await createUserDocument(firebaseUser);
+            setUser(userData);
+          } catch (error) {
+            console.error('Error creating user document:', error);
+            setUser(null);
+          }
+        } else {
+          setUser(null);
+        }
+
+        setLoading(false);
+      });
+
+      return () => {
+        clearTimeout(loadingTimeout);
+        unsubscribe();
+      };
+    } catch (error) {
+      console.error('Error initializing auth:', error);
+      clearTimeout(loadingTimeout);
+      setLoading(false);
+    }
   }, []);
 
   const signInWithGoogle = async () => {
