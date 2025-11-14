@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
@@ -20,23 +20,11 @@ import {
   Globe,
   Zap,
   Crown,
+  Loader,
 } from 'lucide-react';
-
-interface Voice {
-  id: string;
-  name: string;
-  description: string;
-  gender: 'male' | 'female' | 'neutral';
-  accent: string;
-  style: string;
-  language: string;
-  preview: string;
-  isFavorite: boolean;
-  isPremium: boolean;
-  category: 'professional' | 'casual' | 'energetic' | 'calm' | 'narrative' | 'custom';
-  rating: number;
-  usageCount: number;
-}
+import { collection, query, orderBy, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase/config';
+import { Voice } from '@/lib/firestore/types';
 
 export default function VoicesPage() {
   return (
@@ -58,118 +46,42 @@ function VoicesContent() {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [playingVoiceId, setPlayingVoiceId] = useState<string | null>(null);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  const [voices, setVoices] = useState<Voice[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock voices data
-  const [voices, setVoices] = useState<Voice[]>([
-    {
-      id: '1',
-      name: 'Sarah Professional',
-      description: 'Clear, confident voice perfect for business presentations',
-      gender: 'female',
-      accent: 'American',
-      style: 'Professional',
-      language: 'English (US)',
-      preview: '/audio/sarah.mp3',
-      isFavorite: true,
-      isPremium: false,
-      category: 'professional',
-      rating: 4.8,
-      usageCount: 245,
-    },
-    {
-      id: '2',
-      name: 'Marcus Deep',
-      description: 'Rich, authoritative tone ideal for documentaries',
-      gender: 'male',
-      accent: 'British',
-      style: 'Narrative',
-      language: 'English (UK)',
-      preview: '/audio/marcus.mp3',
-      isFavorite: false,
-      isPremium: true,
-      category: 'narrative',
-      rating: 4.9,
-      usageCount: 189,
-    },
-    {
-      id: '3',
-      name: 'Emma Friendly',
-      description: 'Warm and approachable, great for tutorials',
-      gender: 'female',
-      accent: 'Canadian',
-      style: 'Casual',
-      language: 'English (CA)',
-      preview: '/audio/emma.mp3',
-      isFavorite: true,
-      isPremium: false,
-      category: 'casual',
-      rating: 4.7,
-      usageCount: 312,
-    },
-    {
-      id: '4',
-      name: 'Alex Energetic',
-      description: 'Upbeat and dynamic voice for promotional content',
-      gender: 'male',
-      accent: 'American',
-      style: 'Energetic',
-      language: 'English (US)',
-      preview: '/audio/alex.mp3',
-      isFavorite: false,
-      isPremium: false,
-      category: 'energetic',
-      rating: 4.6,
-      usageCount: 167,
-    },
-    {
-      id: '5',
-      name: 'Jennifer Calm',
-      description: 'Soothing and gentle, perfect for meditation or wellness',
-      gender: 'female',
-      accent: 'Australian',
-      style: 'Calm',
-      language: 'English (AU)',
-      preview: '/audio/jennifer.mp3',
-      isFavorite: false,
-      isPremium: true,
-      category: 'calm',
-      rating: 4.9,
-      usageCount: 98,
-    },
-    {
-      id: '6',
-      name: 'David Corporate',
-      description: 'Professional and trustworthy for corporate videos',
-      gender: 'male',
-      accent: 'American',
-      style: 'Professional',
-      language: 'English (US)',
-      preview: '/audio/david.mp3',
-      isFavorite: true,
-      isPremium: false,
-      category: 'professional',
-      rating: 4.8,
-      usageCount: 223,
-    },
-    {
-      id: '7',
-      name: 'My Custom Voice',
-      description: 'Your uploaded custom voice clone',
-      gender: 'neutral',
-      accent: 'Custom',
-      style: 'Custom',
-      language: 'English (US)',
-      preview: '/audio/custom.mp3',
-      isFavorite: true,
-      isPremium: false,
-      category: 'custom',
-      rating: 5.0,
-      usageCount: 45,
-    },
-  ]);
+  // Fetch voices from Firestore
+  useEffect(() => {
+    const fetchVoices = async () => {
+      try {
+        setLoading(true);
+        const voicesQuery = query(collection(db, 'voices'), orderBy('name', 'asc'));
+        const snapshot = await getDocs(voicesQuery);
+        const voicesData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as Voice[];
+        setVoices(voicesData);
+      } catch (error) {
+        console.error('Error fetching voices:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const toggleFavorite = (voiceId: string) => {
-    setVoices(voices.map((v) => (v.id === voiceId ? { ...v, isFavorite: !v.isFavorite } : v)));
+    fetchVoices();
+  }, []);
+
+  const toggleFavorite = async (voiceId: string) => {
+    const voice = voices.find((v) => v.id === voiceId);
+    if (!voice) return;
+
+    try {
+      const voiceRef = doc(db, 'voices', voiceId);
+      await updateDoc(voiceRef, { isFavorite: !voice.isFavorite });
+      setVoices(voices.map((v) => (v.id === voiceId ? { ...v, isFavorite: !v.isFavorite } : v)));
+    } catch (error) {
+      console.error('Error updating favorite:', error);
+    }
   };
 
   const togglePlayPause = (voiceId: string) => {
@@ -353,7 +265,13 @@ function VoicesContent() {
         </div>
 
         {/* Voices Grid */}
-        {filteredVoices.length === 0 ? (
+        {loading ? (
+          <div className="bg-white rounded-[32px] p-12 text-center border border-gray-100">
+            <Loader className="h-16 w-16 text-gray-400 mx-auto mb-4 animate-spin" />
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Loading voices...</h3>
+            <p className="text-gray-600">Please wait while we fetch available voices</p>
+          </div>
+        ) : filteredVoices.length === 0 ? (
           <div className="bg-white rounded-[32px] p-12 text-center border border-gray-100">
             <Mic className="h-16 w-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-xl font-bold text-gray-900 mb-2">No voices found</h3>

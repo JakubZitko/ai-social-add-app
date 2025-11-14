@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
@@ -18,80 +18,48 @@ import {
   ChevronRight,
   Plus,
   Filter,
+  Loader,
 } from 'lucide-react';
 import { FaTiktok } from 'react-icons/fa';
-
-interface ScheduledPost {
-  id: string;
-  videoId: string;
-  videoTitle: string;
-  thumbnailUrl?: string;
-  caption: string;
-  scheduledTime: Date;
-  platforms: Array<'tiktok' | 'instagram' | 'youtube'>;
-  status: 'scheduled' | 'posted' | 'failed';
-  hashtags?: string[];
-}
-
-const mockPosts: ScheduledPost[] = [
-  {
-    id: '1',
-    videoId: 'vid-1',
-    videoTitle: 'Product Launch Announcement',
-    caption: 'Excited to announce our latest AI-powered features! 🚀',
-    scheduledTime: new Date('2025-11-15T09:00:00'),
-    platforms: ['tiktok', 'instagram', 'youtube'],
-    status: 'scheduled',
-    hashtags: ['#AI', '#ProductLaunch', '#Innovation'],
-  },
-  {
-    id: '2',
-    videoId: 'vid-2',
-    videoTitle: 'Tutorial: Getting Started',
-    caption: 'Learn how to create your first AI video in under 5 minutes! 🎥',
-    scheduledTime: new Date('2025-11-15T14:00:00'),
-    platforms: ['tiktok', 'youtube'],
-    status: 'scheduled',
-    hashtags: ['#Tutorial', '#HowTo', '#VideoMarketing'],
-  },
-  {
-    id: '3',
-    videoId: 'vid-3',
-    videoTitle: 'Customer Success Story',
-    caption: 'See how @client increased engagement by 300% 📈',
-    scheduledTime: new Date('2025-11-16T10:00:00'),
-    platforms: ['instagram', 'youtube'],
-    status: 'scheduled',
-    hashtags: ['#SuccessStory', '#CaseStudy'],
-  },
-  {
-    id: '4',
-    videoId: 'vid-4',
-    videoTitle: 'Weekly Tips & Tricks',
-    caption: 'Pro tip: Use these gestures to increase viewer retention! 💡',
-    scheduledTime: new Date('2025-11-16T16:30:00'),
-    platforms: ['tiktok', 'instagram'],
-    status: 'scheduled',
-    hashtags: ['#Tips', '#SocialMedia', '#ContentCreation'],
-  },
-  {
-    id: '5',
-    videoId: 'vid-5',
-    videoTitle: 'Behind the Scenes',
-    caption: 'How we use AI to create hundreds of videos daily 🤖',
-    scheduledTime: new Date('2025-11-17T11:00:00'),
-    platforms: ['youtube'],
-    status: 'scheduled',
-    hashtags: ['#BTS', '#AI', '#Automation'],
-  },
-];
+import { collection, query, where, orderBy, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { db } from '@/lib/firebase/config';
+import { ScheduledPost } from '@/lib/firestore/types';
 
 function ScheduledPostsContent() {
   const router = useRouter();
   const { user } = useAuth();
   const [selectedWeek, setSelectedWeek] = useState(new Date());
   const [filterPlatform, setFilterPlatform] = useState<string>('all');
-  const [posts, setPosts] = useState<ScheduledPost[]>(mockPosts);
+  const [posts, setPosts] = useState<ScheduledPost[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch scheduled posts from Firestore
+  useEffect(() => {
+    const fetchPosts = async () => {
+      if (!user) return;
+
+      try {
+        setLoading(true);
+        const postsQuery = query(
+          collection(db, 'scheduledPosts'),
+          where('userId', '==', user.uid),
+          orderBy('scheduledTime', 'asc')
+        );
+        const snapshot = await getDocs(postsQuery);
+        const postsData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as ScheduledPost[];
+        setPosts(postsData);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, [user]);
 
   const getPlatformIcon = (platform: string) => {
     switch (platform) {

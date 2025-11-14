@@ -22,6 +22,7 @@ import {
   Plus,
 } from 'lucide-react';
 import { useCredits } from '@/hooks/useCredits';
+import { getUserProjects } from '@/lib/firestore/projects';
 import Link from 'next/link';
 
 export default function ImprovedDashboardPage() {
@@ -39,6 +40,26 @@ function ImprovedDashboardContent() {
   const { user } = useAuth();
   const { credits, loading: creditsLoading } = useCredits();
   const [recentVideos, setRecentVideos] = useState<any[]>([]);
+  const [loadingVideos, setLoadingVideos] = useState(true);
+
+  // Fetch recent videos from Firestore
+  useEffect(() => {
+    const fetchRecentVideos = async () => {
+      if (!user) return;
+
+      try {
+        setLoadingVideos(true);
+        const videosData = await getUserProjects(user.uid);
+        setRecentVideos(videosData.slice(0, 6)); // Get latest 6 videos
+      } catch (error) {
+        console.error('Error fetching recent videos:', error);
+      } finally {
+        setLoadingVideos(false);
+      }
+    };
+
+    fetchRecentVideos();
+  }, [user]);
 
   // Quick start templates based on user goals
   const quickStartTemplates = [

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
@@ -20,21 +20,8 @@ import {
   Video,
   Eye,
 } from 'lucide-react';
-
-interface Project {
-  id: string;
-  title: string;
-  thumbnailUrl: string;
-  duration: number;
-  status: 'completed' | 'processing' | 'failed' | 'draft';
-  createdAt: Date;
-  updatedAt: Date;
-  views: number;
-  avatar: string;
-  voice: string;
-  aspectRatio: '16:9' | '9:16' | '1:1';
-  tags?: string[];
-}
+import { getUserProjects, deleteProject } from '@/lib/firestore/projects';
+import { Project } from '@/lib/firestore/types';
 
 export default function ProjectsPage() {
   return (
@@ -54,94 +41,27 @@ function ProjectsContent() {
   const [filterStatus, setFilterStatus] = useState<'all' | 'completed' | 'processing' | 'failed' | 'draft'>('all');
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'name'>('newest');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock projects data
-  const [projects, setProjects] = useState<Project[]>([
-    {
-      id: '1',
-      title: 'Summer Product Launch Video',
-      thumbnailUrl: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=400',
-      duration: 45,
-      status: 'completed',
-      createdAt: new Date('2025-11-10'),
-      updatedAt: new Date('2025-11-10'),
-      views: 1240,
-      avatar: 'Sarah',
-      voice: 'Professional Female',
-      aspectRatio: '16:9',
-      tags: ['product', 'launch'],
-    },
-    {
-      id: '2',
-      title: 'Brand Awareness Campaign',
-      thumbnailUrl: 'https://images.unsplash.com/photo-1533158326339-7f3cf2404354?w=400',
-      duration: 30,
-      status: 'completed',
-      createdAt: new Date('2025-11-08'),
-      updatedAt: new Date('2025-11-08'),
-      views: 856,
-      avatar: 'Marcus',
-      voice: 'Deep Male',
-      aspectRatio: '9:16',
-      tags: ['brand', 'social'],
-    },
-    {
-      id: '3',
-      title: 'Customer Testimonial Series',
-      thumbnailUrl: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400',
-      duration: 60,
-      status: 'processing',
-      createdAt: new Date('2025-11-12'),
-      updatedAt: new Date('2025-11-12'),
-      views: 0,
-      avatar: 'Jennifer',
-      voice: 'Friendly Female',
-      aspectRatio: '1:1',
-      tags: ['testimonial'],
-    },
-    {
-      id: '4',
-      title: 'Q4 Sales Promotion',
-      thumbnailUrl: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=400',
-      duration: 35,
-      status: 'completed',
-      createdAt: new Date('2025-11-05'),
-      updatedAt: new Date('2025-11-05'),
-      views: 2134,
-      avatar: 'David',
-      voice: 'Energetic Male',
-      aspectRatio: '16:9',
-      tags: ['sales', 'promotion'],
-    },
-    {
-      id: '5',
-      title: 'Tutorial: Getting Started',
-      thumbnailUrl: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400',
-      duration: 120,
-      status: 'failed',
-      createdAt: new Date('2025-11-11'),
-      updatedAt: new Date('2025-11-11'),
-      views: 0,
-      avatar: 'Emma',
-      voice: 'Clear Female',
-      aspectRatio: '16:9',
-      tags: ['tutorial', 'education'],
-    },
-    {
-      id: '6',
-      title: 'Holiday Special Announcement',
-      thumbnailUrl: 'https://images.unsplash.com/photo-1512295767273-ac109ac3acfa?w=400',
-      duration: 25,
-      status: 'draft',
-      createdAt: new Date('2025-11-13'),
-      updatedAt: new Date('2025-11-13'),
-      views: 0,
-      avatar: 'Michael',
-      voice: 'Warm Male',
-      aspectRatio: '9:16',
-      tags: ['holiday', 'announcement'],
-    },
-  ]);
+  // Fetch user projects from Firestore
+  useEffect(() => {
+    const fetchProjects = async () => {
+      if (!user) return;
+
+      try {
+        setLoading(true);
+        const userProjects = await getUserProjects(user.uid);
+        setProjects(userProjects);
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, [user]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -193,9 +113,15 @@ function ProjectsContent() {
     failed: projects.filter((p) => p.status === 'failed').length,
   };
 
-  const handleDeleteProject = (id: string) => {
+  const handleDeleteProject = async (id: string) => {
     if (confirm('Are you sure you want to delete this project?')) {
-      setProjects(projects.filter((p) => p.id !== id));
+      try {
+        await deleteProject(id);
+        setProjects(projects.filter((p) => p.id !== id));
+      } catch (error) {
+        console.error('Error deleting project:', error);
+        alert('Failed to delete project. Please try again.');
+      }
     }
   };
 
@@ -312,7 +238,13 @@ function ProjectsContent() {
         </div>
 
         {/* Projects Grid */}
-        {filteredProjects.length === 0 ? (
+        {loading ? (
+          <div className="bg-white rounded-[32px] p-12 text-center border border-gray-100">
+            <Loader className="h-16 w-16 text-gray-400 mx-auto mb-4 animate-spin" />
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Loading projects...</h3>
+            <p className="text-gray-600">Please wait while we fetch your videos</p>
+          </div>
+        ) : filteredProjects.length === 0 ? (
           <div className="bg-white rounded-[32px] p-12 text-center border border-gray-100">
             <Video className="h-16 w-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-xl font-bold text-gray-900 mb-2">No projects found</h3>

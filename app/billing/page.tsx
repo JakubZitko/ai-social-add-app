@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
@@ -18,7 +18,11 @@ import {
   Package,
   ArrowRight,
   AlertCircle,
+  Loader,
 } from 'lucide-react';
+import { collection, query, where, orderBy, getDocs, limit } from 'firebase/firestore';
+import { db } from '@/lib/firebase/config';
+import { Transaction } from '@/lib/firestore/types';
 
 interface Plan {
   id: string;
@@ -53,9 +57,40 @@ export default function BillingPage() {
 
 function BillingContent() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user} = useAuth();
 
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch transaction history from Firestore
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      if (!user) return;
+
+      try {
+        setLoading(true);
+        const transactionsQuery = query(
+          collection(db, 'transactions'),
+          where('userId', '==', user.uid),
+          orderBy('createdAt', 'desc'),
+          limit(10)
+        );
+        const snapshot = await getDocs(transactionsQuery);
+        const transactionsData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as Transaction[];
+        setTransactions(transactionsData);
+      } catch (error) {
+        console.error('Error fetching transactions:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTransactions();
+  }, [user]);
 
   // Credit plans
   const plans: Plan[] = [
@@ -126,37 +161,6 @@ function BillingContent() {
         'SLA guarantee',
       ],
       badge: 'Enterprise',
-    },
-  ];
-
-  // Mock transaction history
-  const transactions: Transaction[] = [
-    {
-      id: '1',
-      date: new Date('2025-11-10'),
-      description: 'Professional Plan - 150 credits',
-      credits: 150,
-      amount: 79,
-      status: 'completed',
-      invoice: '/invoices/INV-001.pdf',
-    },
-    {
-      id: '2',
-      date: new Date('2025-10-15'),
-      description: 'Starter Plan - 50 credits',
-      credits: 50,
-      amount: 29,
-      status: 'completed',
-      invoice: '/invoices/INV-002.pdf',
-    },
-    {
-      id: '3',
-      date: new Date('2025-09-22'),
-      description: 'Business Plan - 500 credits',
-      credits: 500,
-      amount: 199,
-      status: 'completed',
-      invoice: '/invoices/INV-003.pdf',
     },
   ];
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
@@ -20,109 +20,48 @@ import {
   Settings,
   TrendingUp,
   BarChart3,
+  Loader,
 } from 'lucide-react';
 import { FaTiktok } from 'react-icons/fa';
 import { Instagram, Youtube } from 'lucide-react';
-
-interface Automation {
-  id: string;
-  name: string;
-  description: string;
-  trigger: {
-    type: 'schedule' | 'event' | 'manual';
-    schedule?: string;
-    event?: string;
-  };
-  actions: Array<{
-    type: 'generate_video' | 'post_to_social' | 'send_notification';
-    platform?: 'tiktok' | 'instagram' | 'youtube';
-    config: any;
-  }>;
-  status: 'active' | 'paused' | 'draft';
-  lastRun?: Date;
-  nextRun?: Date;
-  runsCount: number;
-  successRate: number;
-}
-
-const mockAutomations: Automation[] = [
-  {
-    id: '1',
-    name: 'Daily TikTok Post',
-    description: 'Auto-generate and post 1 video to TikTok every day at 9 AM',
-    trigger: {
-      type: 'schedule',
-      schedule: 'Daily at 9:00 AM',
-    },
-    actions: [
-      { type: 'generate_video', config: { template: 'default' } },
-      { type: 'post_to_social', platform: 'tiktok', config: {} },
-    ],
-    status: 'active',
-    lastRun: new Date('2025-11-14T09:00:00'),
-    nextRun: new Date('2025-11-15T09:00:00'),
-    runsCount: 45,
-    successRate: 98,
-  },
-  {
-    id: '2',
-    name: 'Weekly YouTube Series',
-    description: 'Generate 3 videos every Monday and post to YouTube',
-    trigger: {
-      type: 'schedule',
-      schedule: 'Weekly on Monday at 10:00 AM',
-    },
-    actions: [
-      { type: 'generate_video', config: { count: 3 } },
-      { type: 'post_to_social', platform: 'youtube', config: {} },
-    ],
-    status: 'active',
-    lastRun: new Date('2025-11-11T10:00:00'),
-    nextRun: new Date('2025-11-18T10:00:00'),
-    runsCount: 12,
-    successRate: 100,
-  },
-  {
-    id: '3',
-    name: 'Instagram Reels - 3x Daily',
-    description: 'Post to Instagram Reels at 9 AM, 2 PM, and 6 PM daily',
-    trigger: {
-      type: 'schedule',
-      schedule: '3 times daily (9 AM, 2 PM, 6 PM)',
-    },
-    actions: [
-      { type: 'generate_video', config: {} },
-      { type: 'post_to_social', platform: 'instagram', config: {} },
-    ],
-    status: 'paused',
-    lastRun: new Date('2025-11-13T18:00:00'),
-    runsCount: 87,
-    successRate: 95,
-  },
-  {
-    id: '4',
-    name: 'Engagement Booster',
-    description: 'Generate trending content when engagement drops below threshold',
-    trigger: {
-      type: 'event',
-      event: 'Engagement < 5%',
-    },
-    actions: [
-      { type: 'generate_video', config: { style: 'trending' } },
-      { type: 'post_to_social', platform: 'tiktok', config: {} },
-      { type: 'send_notification', config: {} },
-    ],
-    status: 'draft',
-    runsCount: 0,
-    successRate: 0,
-  },
-];
+import { collection, query, where, orderBy, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase/config';
+import { Automation } from '@/lib/firestore/types';
 
 function AutomationsContent() {
   const router = useRouter();
   const { user } = useAuth();
-  const [automations, setAutomations] = useState<Automation[]>(mockAutomations);
+  const [automations, setAutomations] = useState<Automation[]>([]);
   const [selectedAutomation, setSelectedAutomation] = useState<Automation | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch user automations from Firestore
+  useEffect(() => {
+    const fetchAutomations = async () => {
+      if (!user) return;
+
+      try {
+        setLoading(true);
+        const automationsQuery = query(
+          collection(db, 'automations'),
+          where('userId', '==', user.uid),
+          orderBy('createdAt', 'desc')
+        );
+        const snapshot = await getDocs(automationsQuery);
+        const automationsData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as Automation[];
+        setAutomations(automationsData);
+      } catch (error) {
+        console.error('Error fetching automations:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAutomations();
+  }, [user]);
 
   const getPlatformIcon = (platform: string) => {
     switch (platform) {
@@ -150,21 +89,35 @@ function AutomationsContent() {
     }
   };
 
-  const toggleAutomationStatus = (id: string) => {
-    setAutomations(
-      automations.map((auto) =>
-        auto.id === id
-          ? {
-              ...auto,
-              status: auto.status === 'active' ? ('paused' as const) : ('active' as const),
-            }
-          : auto
-      )
-    );
+  const toggleAutomationStatus = async (id: string) => {
+    const automation = automations.find((a) => a.id === id);
+    if (!automation) return;
+
+    const newStatus = automation.status === 'active' ? 'paused' : 'active';
+
+    try {
+      const automationRef = doc(db, 'automations', id);
+      await updateDoc(automationRef, { status: newStatus });
+      setAutomations(
+        automations.map((auto) =>
+          auto.id === id ? { ...auto, status: newStatus as 'active' | 'paused' } : auto
+        )
+      );
+    } catch (error) {
+      console.error('Error toggling automation status:', error);
+    }
   };
 
-  const deleteAutomation = (id: string) => {
-    setAutomations(automations.filter((auto) => auto.id !== id));
+  const handleDeleteAutomation = async (id: string) => {
+    if (confirm('Are you sure you want to delete this automation?')) {
+      try {
+        await deleteDoc(doc(db, 'automations', id));
+        setAutomations(automations.filter((a) => a.id !== id));
+      } catch (error) {
+        console.error('Error deleting automation:', error);
+        alert('Failed to delete automation. Please try again.');
+      }
+    }
   };
 
   const activeAutomations = automations.filter((a) => a.status === 'active').length;
@@ -244,7 +197,27 @@ function AutomationsContent() {
 
           {/* Automations List */}
           <div className="space-y-4">
-            {automations.map((automation) => (
+            {loading ? (
+              <div className="bg-white rounded-[32px] p-12 text-center border border-gray-100">
+                <Loader className="h-16 w-16 text-gray-400 mx-auto mb-4 animate-spin" />
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Loading automations...</h3>
+                <p className="text-gray-600">Please wait</p>
+              </div>
+            ) : automations.length === 0 ? (
+              <div className="bg-white rounded-[32px] p-12 text-center border border-gray-100">
+                <Zap className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-xl font-bold text-gray-900 mb-2">No automations yet</h3>
+                <p className="text-gray-600 mb-6">Create your first automation to start saving time</p>
+                <button
+                  onClick={() => router.push('/automations/new')}
+                  className="px-6 py-3 bg-gray-900 text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors"
+                >
+                  Create Automation
+                </button>
+              </div>
+            ) : (
+              <>
+                {automations.map((automation) => (
               <div
                 key={automation.id}
                 className="bg-white rounded-[24px] p-6 border border-gray-200 hover:shadow-lg transition-all"
@@ -357,10 +330,12 @@ function AutomationsContent() {
                 </div>
               </div>
             ))}
+              </>
+            )}
           </div>
 
-          {/* Empty State */}
-          {automations.length === 0 && (
+          {/* Old Empty State - REMOVED (now handled in loading/empty check above) */}
+          {false && (
             <div className="bg-white rounded-[32px] p-12 border border-gray-200 text-center">
               <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Zap className="h-10 w-10 text-purple-600" />
