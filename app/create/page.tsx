@@ -80,6 +80,8 @@ function CreateProjectContent() {
   const [enhancingScript, setEnhancingScript] = useState(false);
   const [scriptTone, setScriptTone] = useState<string>('professional');
   const [scriptGoal, setScriptGoal] = useState<string>('inform');
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [customAvatarFile, setCustomAvatarFile] = useState<File | null>(null);
 
   const filteredAvatars = filterAvatars(avatarFilters);
   const selectedAvatar = avatars.find((a) => a.id === selectedAvatarId);
@@ -148,6 +150,41 @@ function CreateProjectContent() {
       setError(err.message || 'Failed to enhance script');
     } finally {
       setEnhancingScript(false);
+    }
+  };
+
+  const handleCustomAvatarUpload = async (file: File) => {
+    try {
+      setUploadingAvatar(true);
+      setError('');
+
+      // Validate file
+      if (!file.type.startsWith('image/')) {
+        setError('Please upload an image file (JPG, PNG, etc.)');
+        return;
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        // 10MB limit
+        setError('Image file is too large. Maximum size is 10MB.');
+        return;
+      }
+
+      setCustomAvatarFile(file);
+
+      // TODO: In production, this would:
+      // 1. Upload photo to Firebase Storage
+      // 2. Call backend API to create custom avatar using Heygen/D-ID
+      // 3. Return the new avatar ID
+      // 4. Set selectedAvatarId to the new custom avatar
+
+      setError('Custom avatar upload ready! (This will work once connected to Heygen/D-ID API)');
+      setShowAvatarModal(false);
+    } catch (err: any) {
+      console.error('Error uploading custom avatar:', err);
+      setError(err.message || 'Failed to upload custom avatar');
+    } finally {
+      setUploadingAvatar(false);
     }
   };
 
@@ -643,6 +680,44 @@ function CreateProjectContent() {
         title="Select Avatar"
         size="full"
       >
+        {/* Custom Avatar Upload */}
+        <div className="mb-6 bg-gradient-to-br from-orange-50 to-pink-50 rounded-2xl p-4 border-2 border-orange-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <Upload className="h-4 w-4 text-orange-600" />
+                <h3 className="text-sm font-bold text-gray-900">Create Custom Avatar</h3>
+              </div>
+              <p className="text-xs text-gray-600">Upload your photo to create a personalized AI actor</p>
+            </div>
+            <label className="cursor-pointer">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleCustomAvatarUpload(file);
+                }}
+                className="hidden"
+                disabled={uploadingAvatar}
+              />
+              <div className="px-4 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-xl font-semibold transition-all flex items-center gap-2 disabled:opacity-50">
+                {uploadingAvatar ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Uploading...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="h-4 w-4" />
+                    Upload Photo
+                  </>
+                )}
+              </div>
+            </label>
+          </div>
+        </div>
+
         <AvatarFilters
           filters={avatarFilters}
           onFilterChange={setAvatarFilters}

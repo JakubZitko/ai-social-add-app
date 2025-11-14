@@ -14,6 +14,7 @@ import {
   LogOut,
   Sparkles,
   CreditCard,
+  Film,
 } from 'lucide-react';
 
 interface NavItemProps {
@@ -108,6 +109,12 @@ export function AppLayout({ children }: AppLayoutProps) {
             </p>
           </div>
 
+          <NavItem
+            icon={<Film size={20} />}
+            label="Scene Generator"
+            href="/scenes"
+            active={pathname === '/scenes'}
+          />
           <NavItem
             icon={<Mic size={20} />}
             label="Voices"
