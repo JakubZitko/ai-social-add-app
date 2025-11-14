@@ -4,27 +4,168 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import { Button } from '@/components/ui/Button';
-import { Card, CardBody, CardHeader } from '@/components/ui/Card';
 import {
-  Sparkles,
+  LayoutGrid,
   Plus,
+  Search,
+  Folder,
+  Settings,
   Video,
-  Clock,
-  CheckCircle,
-  XCircle,
-  User,
-  LogOut,
+  Mic,
+  ChevronDown,
+  Bell,
+  CreditCard,
+  MoreHorizontal,
+  Play,
 } from 'lucide-react';
 import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { Project } from '@/types';
 
+// --- COMPONENT: AVATAR DRAWER (The "Pop Up") ---
+interface AvatarDrawerProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSelect: () => void;
+}
+
+const AvatarDrawer: React.FC<AvatarDrawerProps> = ({ isOpen, onClose, onSelect }) => {
+  if (!isOpen) return null;
+
+  const handleAvatarSelect = () => {
+    onSelect();
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center">
+      {/* Backdrop Blur */}
+      <div
+        className="absolute inset-0 bg-black/20 backdrop-blur-sm transition-opacity"
+        onClick={onClose}
+      ></div>
+
+      {/* The Drawer Content */}
+      <div className="relative w-full max-w-6xl h-[85vh] bg-white rounded-t-[40px] shadow-2xl overflow-hidden flex flex-col animate-slide-up">
+        {/* Drawer Header */}
+        <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-white/80 backdrop-blur z-10">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 tracking-tight">
+              Select Actor
+            </h2>
+            <p className="text-gray-500 text-sm mt-1">
+              Choose who will present your video
+            </p>
+          </div>
+
+          {/* Filters Pill */}
+          <div className="flex gap-2 bg-gray-100 p-1.5 rounded-full">
+            <button className="px-4 py-2 bg-white rounded-full shadow-sm text-sm font-semibold text-gray-900">
+              Talking Head
+            </button>
+            <button className="px-4 py-2 rounded-full text-sm font-medium text-gray-500 hover:bg-gray-200/50">
+              Gestures Only
+            </button>
+          </div>
+
+          <button
+            onClick={onClose}
+            className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+          >
+            <ChevronDown className="w-6 h-6 text-gray-600" />
+          </button>
+        </div>
+
+        {/* Drawer Body (Scrollable) */}
+        <div className="flex-1 overflow-y-auto p-8 bg-gray-50/50">
+          {/* Category: Featured */}
+          <div className="mb-8">
+            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">
+              Trending Avatars
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+              {/* Avatar Cards */}
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => (
+                <div
+                  key={item}
+                  onClick={handleAvatarSelect}
+                  className="group relative bg-white rounded-3xl p-3 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer border border-gray-100"
+                >
+                  <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-gray-200 relative mb-3">
+                    <img
+                      src={`https://i.pravatar.cc/300?img=${item + 10}`}
+                      className="w-full h-full object-cover"
+                      alt="Avatar"
+                    />
+                    {/* Hover Video Preview Icon */}
+                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-lg">
+                        <Play className="w-4 h-4 fill-black text-black ml-1" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="px-1">
+                    <div className="flex justify-between items-center">
+                      <h4 className="font-semibold text-gray-900">Avatar {item}</h4>
+                      <span className="text-[10px] bg-gray-100 px-2 py-1 rounded-full text-gray-600">
+                        UGC
+                      </span>
+                    </div>
+                    <div className="flex gap-1 mt-2">
+                      <div
+                        className="w-3 h-3 rounded-full bg-blue-100 border border-blue-200"
+                        title="Blue Shirt"
+                      ></div>
+                      <div
+                        className="w-3 h-3 rounded-full bg-green-100 border border-green-200"
+                        title="Casual"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Helper for Sidebar Items
+interface NavItemProps {
+  icon: React.ReactNode;
+  label: string;
+  active?: boolean;
+  onClick?: () => void;
+}
+
+function NavItem({ icon, label, active, onClick }: NavItemProps) {
+  return (
+    <div
+      onClick={onClick}
+      className={`
+      flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200
+      ${
+        active
+          ? 'bg-white shadow-sm text-gray-900 font-semibold border border-gray-100'
+          : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
+      }
+    `}
+    >
+      <div className={active ? 'text-black' : 'text-gray-400'}>{icon}</div>
+      <span className="text-sm">{label}</span>
+    </div>
+  );
+}
+
+// --- MAIN DASHBOARD COMPONENT ---
 function DashboardContent() {
   const { user, signOut } = useAuth();
   const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -70,212 +211,286 @@ function DashboardContent() {
     }
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return <CheckCircle className="h-5 w-5 text-green-600" />;
-      case 'processing':
-        return <Clock className="h-5 w-5 text-blue-600 animate-spin" />;
-      case 'failed':
-        return <XCircle className="h-5 w-5 text-red-600" />;
-      default:
-        return <Clock className="h-5 w-5 text-gray-600" />;
-    }
+  const handleNewProject = () => {
+    setIsDrawerOpen(true);
   };
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'Completed';
-      case 'processing':
-        return 'Processing';
-      case 'failed':
-        return 'Failed';
-      default:
-        return 'Draft';
-    }
+  const handleAvatarSelected = () => {
+    // Navigate to create page after avatar selection
+    router.push('/create');
+  };
+
+  const getStatusBadge = (status: string) => {
+    const badges = {
+      completed: (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
+          <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span> Ready
+        </span>
+      ),
+      processing: (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
+          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>{' '}
+          Processing
+        </span>
+      ),
+      failed: (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-100">
+          <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span> Failed
+        </span>
+      ),
+      draft: (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-700 border border-gray-100">
+          <span className="w-1.5 h-1.5 rounded-full bg-gray-500"></span> Draft
+        </span>
+      ),
+    };
+    return badges[status as keyof typeof badges] || badges.draft;
+  };
+
+  const formatDate = (date: Date) => {
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    }).format(date);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-4">
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-8 w-8 text-blue-600" />
-              <span className="text-2xl font-bold text-gray-900">VideoAI</span>
+    <div className="flex h-screen bg-[#F3F4F6] font-sans text-gray-900">
+      {/* --- SIDEBAR (Fixed Left) --- */}
+      <aside className="w-72 flex flex-col p-6">
+        {/* Logo */}
+        <div className="flex items-center gap-3 px-2 mb-10">
+          <div className="w-8 h-8 bg-gray-900 rounded-xl flex items-center justify-center">
+            <div className="w-4 h-4 border-2 border-white rounded-full"></div>
+          </div>
+          <span className="font-bold text-lg tracking-tight">VideoAI</span>
+        </div>
+
+        {/* Nav Menu */}
+        <nav className="space-y-1 flex-1">
+          <NavItem icon={<LayoutGrid size={20} />} label="Dashboard" active />
+          <NavItem icon={<Video size={20} />} label="My Projects" />
+          <NavItem icon={<Folder size={20} />} label="Assets" />
+
+          <div className="pt-6 pb-2">
+            <p className="px-3 text-xs font-medium text-gray-400 uppercase tracking-wider">
+              Workspace
+            </p>
+          </div>
+
+          <NavItem icon={<Mic size={20} />} label="Voices" />
+          <NavItem icon={<Settings size={20} />} label="Settings" />
+        </nav>
+
+        {/* User Profile (Bottom) */}
+        <div className="mt-auto bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-3 cursor-pointer hover:bg-gray-50">
+          <div className="w-10 h-10 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full overflow-hidden border border-white shadow-inner">
+            {user?.photoURL ? (
+              <img src={user.photoURL} alt="User" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-600 font-bold">
+                {user?.email?.[0].toUpperCase()}
+              </div>
+            )}
+          </div>
+          <div className="flex-1">
+            <div className="text-sm font-bold text-gray-900">
+              {user?.displayName || user?.email?.split('@')[0] || 'User'}
+            </div>
+            <div className="text-xs text-gray-500">{user?.plan || 'Free Plan'}</div>
+          </div>
+          <button onClick={handleSignOut}>
+            <MoreHorizontal className="text-gray-400 w-4 h-4" />
+          </button>
+        </div>
+      </aside>
+
+      {/* --- MAIN CONTENT --- */}
+      <main className="flex-1 p-4 pl-0 overflow-hidden">
+        <div className="bg-white h-full rounded-[40px] shadow-sm border border-gray-200/60 overflow-y-auto flex flex-col">
+          {/* Header */}
+          <header className="h-20 px-8 flex items-center justify-between border-b border-gray-100 sticky top-0 bg-white/80 backdrop-blur z-10">
+            <div className="flex items-center gap-4 text-gray-400 text-sm">
+              <span className="hover:text-gray-900 cursor-pointer">Team Space</span>
+              <span className="text-gray-300">/</span>
+              <span className="text-gray-900 font-medium">Overview</span>
             </div>
 
             <div className="flex items-center gap-4">
-              {/* Credit Counter */}
-              <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-lg">
-                <Sparkles className="h-5 w-5 text-blue-600" />
-                <span className="text-sm font-semibold text-blue-900">
-                  {user?.credits || 0} Credits
-                </span>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search projects..."
+                  className="pl-10 pr-4 py-2 bg-gray-50 border-none rounded-full text-sm focus:ring-2 focus:ring-gray-200 outline-none w-64 placeholder-gray-400"
+                />
+              </div>
+              <button className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50">
+                <Bell className="w-4 h-4 text-gray-600" />
+              </button>
+              <div className="px-4 py-2 bg-black text-white rounded-full text-sm font-medium flex items-center gap-2 shadow-lg shadow-gray-200">
+                <CreditCard className="w-3 h-3" /> {user?.credits || 0} Credits
+              </div>
+            </div>
+          </header>
+
+          {/* Content Body */}
+          <div className="p-8 max-w-7xl mx-auto w-full">
+            <div className="mb-10">
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900 mb-2">
+                Welcome back, {user?.displayName || user?.email?.split('@')[0] || 'Creator'}
+              </h1>
+              <p className="text-gray-500">
+                Here is what's happening with your video campaigns today.
+              </p>
+            </div>
+
+            {/* Stats Grid (Bento Style) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+              <div
+                className="bg-[#F9FAFB] p-6 rounded-[32px] border border-gray-100 relative overflow-hidden group hover:border-gray-300 transition-colors cursor-pointer"
+                onClick={handleNewProject}
+              >
+                <div className="absolute right-6 top-6 bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-sm text-gray-900 group-hover:scale-110 transition-transform">
+                  <Plus className="w-6 h-6" />
+                </div>
+                <div className="mt-20">
+                  <h3 className="text-2xl font-bold text-gray-900">New Project</h3>
+                  <p className="text-gray-500 mt-1">Create a video ad</p>
+                </div>
               </div>
 
-              {/* User Menu */}
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center">
-                    <User className="h-4 w-4 text-white" />
+              <div className="bg-white p-6 rounded-[32px] border border-gray-100 shadow-lg shadow-gray-100/50">
+                <div className="flex justify-between items-start mb-8">
+                  <div className="p-2 bg-green-50 text-green-600 rounded-xl">
+                    <Video className="w-5 h-5" />
                   </div>
-                  <span className="text-sm font-medium text-gray-700">
-                    {user?.email}
+                  <span className="text-xs font-bold bg-gray-50 px-2 py-1 rounded text-gray-500">
+                    +{projects.filter((p) => p.status === 'completed').length} this week
                   </span>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleSignOut}
-                  className="text-gray-600 hover:text-gray-900"
-                >
-                  <LogOut className="h-4 w-4" />
-                </Button>
+                <div className="text-3xl font-bold text-gray-900">{projects.length}</div>
+                <div className="text-sm text-gray-500 mt-1">Videos Generated</div>
               </div>
+
+              <div className="bg-white p-6 rounded-[32px] border border-gray-100 shadow-lg shadow-gray-100/50">
+                <div className="flex justify-between items-start mb-8">
+                  <div className="p-2 bg-purple-50 text-purple-600 rounded-xl">
+                    <Mic className="w-5 h-5" />
+                  </div>
+                </div>
+                <div className="text-3xl font-bold text-gray-900">{user?.credits || 0}</div>
+                <div className="text-sm text-gray-500 mt-1">Credits Remaining</div>
+              </div>
+            </div>
+
+            {/* Recent List */}
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-lg font-bold text-gray-900">Recent Campaigns</h2>
+              <button className="text-sm font-medium text-gray-500 hover:text-gray-900">
+                View all
+              </button>
+            </div>
+
+            <div className="bg-white border border-gray-100 rounded-[32px] overflow-hidden shadow-sm">
+              {loading ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="animate-spin h-8 w-8 border-4 border-gray-900 border-t-transparent rounded-full" />
+                </div>
+              ) : projects.length === 0 ? (
+                <div className="text-center py-12 px-6">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Video className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    No projects yet
+                  </h3>
+                  <p className="text-gray-500 mb-6">
+                    Create your first video to get started
+                  </p>
+                  <button
+                    onClick={handleNewProject}
+                    className="px-6 py-2.5 bg-gray-900 text-white rounded-full text-sm font-medium hover:bg-gray-800 transition-colors"
+                  >
+                    Create First Project
+                  </button>
+                </div>
+              ) : (
+                <table className="w-full text-left border-collapse">
+                  <thead className="bg-gray-50/50 border-b border-gray-100">
+                    <tr>
+                      <th className="py-4 px-6 text-xs font-medium text-gray-400 uppercase tracking-wider">
+                        Project Name
+                      </th>
+                      <th className="py-4 px-6 text-xs font-medium text-gray-400 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th className="py-4 px-6 text-xs font-medium text-gray-400 uppercase tracking-wider">
+                        Type
+                      </th>
+                      <th className="py-4 px-6 text-xs font-medium text-gray-400 uppercase tracking-wider">
+                        Date
+                      </th>
+                      <th className="py-4 px-6"></th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-50">
+                    {projects.slice(0, 5).map((project, i) => (
+                      <tr
+                        key={project.id}
+                        className="hover:bg-gray-50/80 transition-colors group cursor-pointer"
+                        onClick={() => router.push(`/video/${project.id}`)}
+                      >
+                        <td className="py-4 px-6">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-gray-200 overflow-hidden">
+                              {project.thumbnailUrl ? (
+                                <img
+                                  src={project.thumbnailUrl}
+                                  className="w-full h-full object-cover"
+                                  alt="Thumbnail"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+                                  <Video className="w-5 h-5 text-gray-400" />
+                                </div>
+                              )}
+                            </div>
+                            <span className="font-medium text-gray-900">
+                              {project.scriptText.slice(0, 30)}
+                              {project.scriptText.length > 30 && '...'}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="py-4 px-6">{getStatusBadge(project.status)}</td>
+                        <td className="py-4 px-6 text-sm text-gray-500">
+                          {project.type === 'talking_actor' ? 'Talking Head' : 'Gesture Only'}
+                        </td>
+                        <td className="py-4 px-6 text-sm text-gray-500">
+                          {formatDate(project.createdAt)}
+                        </td>
+                        <td className="py-4 px-6 text-right">
+                          <button className="text-gray-400 hover:text-gray-900 opacity-0 group-hover:opacity-100 transition-opacity text-sm">
+                            Edit
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
         </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Section */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Welcome back, {user?.displayName || 'Creator'}!
-          </h1>
-          <p className="mt-2 text-gray-600">
-            Create professional video ads in minutes with AI
-          </p>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card
-            hover
-            onClick={() => router.push('/create')}
-            className="cursor-pointer border-2 border-blue-600 bg-gradient-to-br from-blue-50 to-white"
-          >
-            <CardBody className="flex flex-col items-center justify-center py-8">
-              <div className="h-16 w-16 rounded-full bg-blue-600 flex items-center justify-center mb-4">
-                <Plus className="h-8 w-8 text-white" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900">
-                Create New Video
-              </h3>
-              <p className="text-sm text-gray-600 mt-2 text-center">
-                Start a new project with AI avatars
-              </p>
-            </CardBody>
-          </Card>
-
-          <Card hover className="cursor-pointer">
-            <CardBody className="flex flex-col items-center justify-center py-8">
-              <div className="h-16 w-16 rounded-full bg-purple-100 flex items-center justify-center mb-4">
-                <Video className="h-8 w-8 text-purple-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900">
-                Browse Templates
-              </h3>
-              <p className="text-sm text-gray-600 mt-2 text-center">
-                Use pre-made templates for faster creation
-              </p>
-            </CardBody>
-          </Card>
-
-          <Card hover className="cursor-pointer">
-            <CardBody className="flex flex-col items-center justify-center py-8">
-              <div className="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center mb-4">
-                <Sparkles className="h-8 w-8 text-green-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900">
-                Buy More Credits
-              </h3>
-              <p className="text-sm text-gray-600 mt-2 text-center">
-                Get more credits to create unlimited videos
-              </p>
-            </CardBody>
-          </Card>
-        </div>
-
-        {/* Projects Section */}
-        <Card>
-          <CardHeader>
-            <h2 className="text-xl font-semibold text-gray-900">
-              Your Projects
-            </h2>
-          </CardHeader>
-          <CardBody>
-            {loading ? (
-              <div className="flex items-center justify-center py-12">
-                <div className="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full" />
-              </div>
-            ) : projects.length === 0 ? (
-              <div className="text-center py-12">
-                <Video className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  No projects yet
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Create your first video to get started
-                </p>
-                <Button
-                  variant="primary"
-                  onClick={() => router.push('/create')}
-                >
-                  <Plus className="mr-2 h-5 w-5" />
-                  Create Your First Video
-                </Button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {projects.map((project) => (
-                  <Card
-                    key={project.id}
-                    hover
-                    onClick={() => router.push(`/video/${project.id}`)}
-                    className="cursor-pointer"
-                  >
-                    <div className="aspect-video bg-gray-900 rounded-t-lg relative">
-                      {project.thumbnailUrl ? (
-                        <img
-                          src={project.thumbnailUrl}
-                          alt={project.scriptText.slice(0, 50)}
-                          className="w-full h-full object-cover rounded-t-lg"
-                        />
-                      ) : (
-                        <div className="flex items-center justify-center h-full">
-                          <Video className="h-12 w-12 text-gray-600" />
-                        </div>
-                      )}
-                      <div className="absolute top-2 right-2">
-                        <div className="flex items-center gap-1 px-2 py-1 bg-black/70 rounded-full text-white text-xs">
-                          {getStatusIcon(project.status)}
-                          <span className="ml-1">{getStatusText(project.status)}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <CardBody>
-                      <h3 className="font-semibold text-gray-900 mb-1 truncate">
-                        {project.scriptText.slice(0, 50)}
-                        {project.scriptText.length > 50 && '...'}
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        {project.type === 'talking_actor' ? 'Talking Head' : 'Gesture Only'}
-                        {' · '}
-                        {project.createdAt.toLocaleDateString()}
-                      </p>
-                    </CardBody>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </CardBody>
-        </Card>
       </main>
+
+      {/* Render the Drawer Component */}
+      <AvatarDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        onSelect={handleAvatarSelected}
+      />
     </div>
   );
 }
