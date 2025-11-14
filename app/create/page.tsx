@@ -4,31 +4,32 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { AppLayout } from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { Textarea } from '@/components/ui/Textarea';
 import { Slider } from '@/components/ui/Slider';
 import { Modal } from '@/components/ui/Modal';
-import { Card, CardBody, CardHeader } from '@/components/ui/Card';
-import { AvatarCard } from '@/components/avatars/AvatarCard';
 import { AvatarFilters } from '@/components/avatars/AvatarFilters';
 import { useAvatars } from '@/lib/hooks/useAvatars';
 import { useVoices } from '@/lib/hooks/useVoices';
 import {
   Sparkles,
-  ArrowLeft,
   Video,
   Hand,
   AlertCircle,
   Upload,
   Check,
+  Play,
+  User,
+  Wand2,
+  Settings as SettingsIcon,
+  Eye,
 } from 'lucide-react';
 import { ProjectType, VoiceSettings, AudioType, VideoAspectRatio, AvatarFilters as AvatarFiltersType } from '@/types';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
-
-type Step = 'type' | 'avatar' | 'script' | 'voice' | 'review';
 
 function CreateProjectContent() {
   const router = useRouter();
@@ -37,7 +38,6 @@ function CreateProjectContent() {
   const { voices, loading: voicesLoading } = useVoices();
 
   // Project state
-  const [step, setStep] = useState<Step>('type');
   const [projectType, setProjectType] = useState<ProjectType>('talking_actor');
   const [selectedAvatarId, setSelectedAvatarId] = useState<string>('');
   const [scriptText, setScriptText] = useState('');
@@ -127,172 +127,270 @@ function CreateProjectContent() {
     }
   };
 
-  // Step 1: Project Type Selection
-  const renderTypeStep = () => (
-    <div className="max-w-4xl mx-auto">
-      <div className="text-center mb-12">
-        <h2 className="text-4xl font-bold text-gray-900 mb-3 tracking-tight">
-          Choose Your Video Type
-        </h2>
-        <p className="text-lg text-gray-600">
-          Select the type of video you want to create
-        </p>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Talking Actor */}
-        <div
-          onClick={() => {
-            setProjectType('talking_actor');
-            setStep('avatar');
-          }}
-          className={`bg-white rounded-[32px] border-2 p-8 cursor-pointer transition-all hover:shadow-xl ${
-            projectType === 'talking_actor' ? 'border-gray-900 shadow-lg' : 'border-gray-200 hover:border-gray-300'
-          }`}
-        >
-          <div className="text-center">
-            <div className="h-20 w-20 rounded-2xl bg-blue-50 flex items-center justify-center mx-auto mb-6">
-              <Video className="h-10 w-10 text-blue-600" />
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">
-              Talking Actor
-            </h3>
-            <p className="text-gray-600 mb-6">
-              Create videos up to 2 minutes with full audio and lip-sync
+  return (
+    <div className="flex h-full">
+      {/* LEFT PANEL - Configuration */}
+      <div className="w-[600px] p-8 overflow-y-auto">
+        <div className="max-w-xl">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-3 tracking-tight">
+              Create New Video
+            </h1>
+            <p className="text-lg text-gray-600">
+              Configure your AI-generated video in real-time
             </p>
-            <ul className="text-sm text-gray-600 text-left space-y-3">
-              <li className="flex items-center gap-3">
-                <div className="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Check className="h-3 w-3 text-green-600" />
-                </div>
-                Full voice narration
-              </li>
-              <li className="flex items-center gap-3">
-                <div className="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Check className="h-3 w-3 text-green-600" />
-                </div>
-                Realistic lip-sync
-              </li>
-              <li className="flex items-center gap-3">
-                <div className="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Check className="h-3 w-3 text-green-600" />
-                </div>
-                Up to 120 seconds
-              </li>
-              <li className="flex items-center gap-3">
-                <div className="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Check className="h-3 w-3 text-green-600" />
-                </div>
-                35+ languages
-              </li>
-            </ul>
           </div>
-        </div>
 
-        {/* Gesture Only */}
-        <div
-          onClick={() => {
-            setProjectType('gesture_only');
-            setStep('avatar');
-          }}
-          className={`bg-white rounded-[32px] border-2 p-8 cursor-pointer transition-all hover:shadow-xl ${
-            projectType === 'gesture_only' ? 'border-gray-900 shadow-lg' : 'border-gray-200 hover:border-gray-300'
-          }`}
-        >
-          <div className="text-center">
-            <div className="h-20 w-20 rounded-2xl bg-purple-50 flex items-center justify-center mx-auto mb-6">
-              <Hand className="h-10 w-10 text-purple-600" />
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-2xl flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-red-600 font-medium">{error}</p>
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">
-              Gesture Only
-            </h3>
-            <p className="text-gray-600 mb-6">
-              Create 5-second clips with custom body language
-            </p>
-            <ul className="text-sm text-gray-600 text-left space-y-3">
-              <li className="flex items-center gap-3">
-                <div className="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Check className="h-3 w-3 text-green-600" />
-                </div>
-                Custom gestures
-              </li>
-              <li className="flex items-center gap-3">
-                <div className="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Check className="h-3 w-3 text-green-600" />
-                </div>
-                No audio needed
-              </li>
-              <li className="flex items-center gap-3">
-                <div className="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Check className="h-3 w-3 text-green-600" />
-                </div>
-                5 seconds length
-              </li>
-              <li className="flex items-center gap-3">
-                <div className="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Check className="h-3 w-3 text-green-600" />
-                </div>
-                Perfect for reactions
-              </li>
-            </ul>
+          )}
+
+          {/* Section 1: Video Type */}
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
+                <Video className="h-4 w-4 text-white" />
+              </div>
+              <h2 className="text-lg font-bold text-gray-900">Video Type</h2>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => setProjectType('talking_actor')}
+                className={`p-4 rounded-2xl border-2 transition-all text-left ${
+                  projectType === 'talking_actor'
+                    ? 'border-gray-900 bg-gray-50 shadow-lg'
+                    : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
+                }`}
+              >
+                <Video className={`h-5 w-5 mb-2 ${projectType === 'talking_actor' ? 'text-gray-900' : 'text-gray-400'}`} />
+                <div className="font-bold text-sm text-gray-900">Talking Video</div>
+                <div className="text-xs text-gray-600 mt-1">Up to 120 seconds</div>
+              </button>
+
+              <button
+                onClick={() => setProjectType('gesture_only')}
+                className={`p-4 rounded-2xl border-2 transition-all text-left ${
+                  projectType === 'gesture_only'
+                    ? 'border-gray-900 bg-gray-50 shadow-lg'
+                    : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
+                }`}
+              >
+                <Hand className={`h-5 w-5 mb-2 ${projectType === 'gesture_only' ? 'text-gray-900' : 'text-gray-400'}`} />
+                <div className="font-bold text-sm text-gray-900">Gesture Only</div>
+                <div className="text-xs text-gray-600 mt-1">5 second clip</div>
+              </button>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
-  );
 
-  // Step 2: Avatar Selection
-  const renderAvatarStep = () => (
-    <div className="max-w-6xl mx-auto">
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2 tracking-tight">Select Your Avatar</h2>
-        <p className="text-lg text-gray-600">
-          Choose from 300+ professional AI actors
-        </p>
-      </div>
+          {/* Section 2: Avatar Selection */}
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
+                <User className="h-4 w-4 text-white" />
+              </div>
+              <h2 className="text-lg font-bold text-gray-900">AI Avatar</h2>
+            </div>
 
-      {selectedAvatar && (
-        <div className="mb-6 bg-white rounded-[24px] p-6 border border-gray-200 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <img
-                src={selectedAvatar.previewUrl}
-                alt={selectedAvatar.name}
-                className="h-16 w-16 rounded-2xl object-cover"
+            {selectedAvatar ? (
+              <div className="flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-200">
+                <img
+                  src={selectedAvatar.previewUrl}
+                  alt={selectedAvatar.name}
+                  className="w-16 h-16 rounded-xl object-cover"
+                />
+                <div className="flex-1">
+                  <div className="font-bold text-gray-900">{selectedAvatar.name}</div>
+                  <div className="text-sm text-gray-600">{selectedAvatar.tags.slice(0, 2).join(', ')}</div>
+                </div>
+                <button
+                  onClick={() => setShowAvatarModal(true)}
+                  className="text-sm font-semibold text-gray-900 hover:text-gray-700"
+                >
+                  Change
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowAvatarModal(true)}
+                className="w-full p-6 bg-white border-2 border-dashed border-gray-300 rounded-2xl hover:border-gray-400 hover:bg-gray-50 transition-all"
+              >
+                <User className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                <div className="text-sm font-semibold text-gray-900">Select Avatar</div>
+                <div className="text-xs text-gray-600 mt-1">Choose from 300+ AI actors</div>
+              </button>
+            )}
+          </div>
+
+          {/* Section 3: Script/Gesture */}
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <Wand2 className="h-4 w-4 text-white" />
+              </div>
+              <h2 className="text-lg font-bold text-gray-900">
+                {projectType === 'talking_actor' ? 'Script' : 'Gesture'}
+              </h2>
+            </div>
+
+            {projectType === 'talking_actor' ? (
+              <Textarea
+                label=""
+                value={scriptText}
+                onChange={(e) => setScriptText(e.target.value)}
+                rows={6}
+                maxLength={1500}
+                showCharCount
+                placeholder="Enter the text your avatar will speak..."
+                className="font-mono"
               />
-              <div>
-                <p className="text-sm text-gray-600">Selected Avatar</p>
-                <p className="text-lg font-bold text-gray-900">
-                  {selectedAvatar.name}
-                </p>
+            ) : (
+              <Textarea
+                label=""
+                value={gesturePrompt}
+                onChange={(e) => setGesturePrompt(e.target.value)}
+                rows={4}
+                maxLength={500}
+                showCharCount
+                placeholder="Describe the gesture you want..."
+              />
+            )}
+          </div>
+
+          {/* Section 4: Voice (only for talking_actor) */}
+          {projectType === 'talking_actor' && (
+            <div className="mb-8">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                  <SettingsIcon className="h-4 w-4 text-white" />
+                </div>
+                <h2 className="text-lg font-bold text-gray-900">Voice Settings</h2>
+              </div>
+
+              <Select
+                label="Voice"
+                value={selectedVoiceId}
+                onChange={setSelectedVoiceId}
+                options={voices.map((v) => ({
+                  value: v.id,
+                  label: `${v.name} (${v.accent})`,
+                }))}
+                placeholder="Select a voice"
+              />
+
+              <div className="mt-4 bg-white rounded-2xl p-4 border border-gray-200 space-y-4">
+                <Slider
+                  label="Speed"
+                  value={voiceSettings.speed}
+                  onChange={(v) => setVoiceSettings({ ...voiceSettings, speed: v })}
+                  min={1.0}
+                  max={1.5}
+                  step={0.1}
+                />
+                <Slider
+                  label="Stability"
+                  value={voiceSettings.stability}
+                  onChange={(v) => setVoiceSettings({ ...voiceSettings, stability: v })}
+                  min={0.0}
+                  max={1.0}
+                  step={0.05}
+                />
               </div>
             </div>
-            <Button variant="outline" onClick={() => setShowAvatarModal(true)}>
-              Change Avatar
-            </Button>
+          )}
+
+          {/* Section 5: Format */}
+          <div className="mb-8">
+            <Select
+              label="Video Format"
+              value={aspectRatio}
+              onChange={(v) => setAspectRatio(v as VideoAspectRatio)}
+              options={[
+                { value: '9:16', label: '9:16 - TikTok/Reels (Vertical)' },
+                { value: '16:9', label: '16:9 - YouTube (Horizontal)' },
+                { value: '1:1', label: '1:1 - Instagram (Square)' },
+              ]}
+            />
+          </div>
+
+          {/* Generate Button */}
+          <button
+            onClick={handleCreateProject}
+            disabled={creating || !selectedAvatarId || (projectType === 'talking_actor' ? !scriptText.trim() : !gesturePrompt.trim())}
+            className="w-full bg-gray-900 text-white px-6 py-4 rounded-2xl font-bold hover:bg-gray-800 transition-all shadow-lg shadow-gray-900/20 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            {creating ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Generating...
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-5 w-5" />
+                Generate Video (2 Credits)
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* RIGHT PANEL - Live Preview */}
+      <div className="flex-1 p-8 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+        <div className="text-center max-w-md">
+          {/* Preview Card */}
+          <div className={`bg-white rounded-[32px] overflow-hidden shadow-2xl border border-gray-200 mb-6 ${
+            aspectRatio === '9:16' ? 'w-64' : aspectRatio === '16:9' ? 'w-full' : 'w-80'
+          }`}>
+            <div className={`bg-gradient-to-br from-gray-900 to-gray-700 flex items-center justify-center relative ${
+              aspectRatio === '9:16' ? 'aspect-[9/16]' : aspectRatio === '16:9' ? 'aspect-[16/9]' : 'aspect-square'
+            }`}>
+              {selectedAvatar ? (
+                <img
+                  src={selectedAvatar.previewUrl}
+                  alt="Avatar preview"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="text-center">
+                  <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Eye className="h-10 w-10 text-white/50" />
+                  </div>
+                  <p className="text-white/70 font-medium">Live Preview</p>
+                  <p className="text-white/50 text-sm mt-1">Select an avatar to preview</p>
+                </div>
+              )}
+
+              {/* Aspect Ratio Badge */}
+              <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm px-3 py-1 rounded-full">
+                <span className="text-white text-xs font-bold">{aspectRatio}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Preview Info */}
+          <div className="space-y-3">
+            <div className="bg-white rounded-2xl p-4 border border-gray-200">
+              <div className="text-xs text-gray-600 mb-1">Video Type</div>
+              <div className="font-bold text-gray-900">
+                {projectType === 'talking_actor' ? 'Talking Video' : 'Gesture Only'}
+              </div>
+            </div>
+
+            {scriptText && projectType === 'talking_actor' && (
+              <div className="bg-white rounded-2xl p-4 border border-gray-200 text-left">
+                <div className="text-xs text-gray-600 mb-2">Script Preview</div>
+                <div className="text-sm text-gray-900 line-clamp-3">
+                  {scriptText}
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      )}
-
-      {!selectedAvatar && (
-        <Button
-          variant="primary"
-          size="lg"
-          className="w-full mb-6"
-          onClick={() => setShowAvatarModal(true)}
-        >
-          <Sparkles className="mr-2 h-5 w-5" />
-          Browse Avatar Library
-        </Button>
-      )}
-
-      {selectedAvatar && (
-        <div className="flex justify-end">
-          <Button variant="primary" onClick={() => setStep('script')}>
-            Continue to Script
-          </Button>
-        </div>
-      )}
+      </div>
 
       {/* Avatar Selection Modal */}
       <Modal
@@ -307,10 +405,10 @@ function CreateProjectContent() {
           resultCount={filteredAvatars.length}
         />
 
-        <div className="mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-h-[60vh] overflow-y-auto">
+        <div className="mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 max-h-[60vh] overflow-y-auto">
           {avatarsLoading ? (
             <div className="col-span-full flex items-center justify-center py-12">
-              <div className="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full" />
+              <div className="animate-spin h-8 w-8 border-4 border-gray-900 border-t-transparent rounded-full" />
             </div>
           ) : filteredAvatars.length === 0 ? (
             <div className="col-span-full text-center py-12">
@@ -318,473 +416,37 @@ function CreateProjectContent() {
             </div>
           ) : (
             filteredAvatars.map((avatar) => (
-              <AvatarCard
+              <div
                 key={avatar.id}
-                avatar={avatar}
-                selected={selectedAvatarId === avatar.id}
                 onClick={() => {
                   setSelectedAvatarId(avatar.id);
                   setShowAvatarModal(false);
                 }}
-              />
+                className={`group cursor-pointer bg-white rounded-2xl p-3 border-2 transition-all hover:shadow-xl hover:-translate-y-1 ${
+                  selectedAvatarId === avatar.id ? 'border-gray-900 shadow-lg' : 'border-gray-200'
+                }`}
+              >
+                <div className="aspect-[3/4] rounded-xl overflow-hidden bg-gray-200 mb-3 relative">
+                  <img
+                    src={avatar.previewUrl}
+                    alt={avatar.name}
+                    className="w-full h-full object-cover"
+                  />
+                  {selectedAvatarId === avatar.id && (
+                    <div className="absolute inset-0 bg-gray-900/20 flex items-center justify-center">
+                      <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                        <Check className="h-6 w-6 text-gray-900" />
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="font-bold text-sm text-gray-900 truncate">{avatar.name}</div>
+                <div className="text-xs text-gray-600 truncate">{avatar.tags[0]}</div>
+              </div>
             ))
           )}
         </div>
       </Modal>
-    </div>
-  );
-
-  // Step 3: Script/Gesture Input
-  const renderScriptStep = () => (
-    <div className="max-w-4xl mx-auto">
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2 tracking-tight">
-          {projectType === 'talking_actor' ? 'Write Your Script' : 'Describe the Gesture'}
-        </h2>
-        <p className="text-lg text-gray-600">
-          {projectType === 'talking_actor'
-            ? 'Enter the text your avatar will speak'
-            : 'Describe what you want your avatar to do'}
-        </p>
-      </div>
-
-      {projectType === 'talking_actor' ? (
-        <Textarea
-          label="Script"
-          value={scriptText}
-          onChange={(e) => setScriptText(e.target.value)}
-          rows={8}
-          maxLength={1500}
-          showCharCount
-          placeholder="Hello! I'm excited to tell you about our amazing product..."
-          helperText="Maximum 1500 characters. Avoid violent, racist, or adult content."
-        />
-      ) : (
-        <Textarea
-          label="Gesture Prompt"
-          value={gesturePrompt}
-          onChange={(e) => setGesturePrompt(e.target.value)}
-          rows={4}
-          maxLength={500}
-          showCharCount
-          placeholder="Make the actor point to the right and smile confidently"
-          helperText="Describe the body language and emotion you want"
-        />
-      )}
-
-      <div className="mt-6 flex gap-3">
-        <Button variant="outline" onClick={() => setStep('avatar')}>
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back
-        </Button>
-        <Button
-          variant="primary"
-          onClick={() => setStep(projectType === 'talking_actor' ? 'voice' : 'review')}
-          className="flex-1"
-          disabled={
-            projectType === 'talking_actor'
-              ? !scriptText.trim()
-              : !gesturePrompt.trim()
-          }
-        >
-          Continue
-        </Button>
-      </div>
-    </div>
-  );
-
-  // Step 4: Voice Customization (Talking Actor only)
-  const renderVoiceStep = () => (
-    <div className="max-w-4xl mx-auto">
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2 tracking-tight">Customize Voice</h2>
-        <p className="text-lg text-gray-600">
-          Choose how your avatar sounds
-        </p>
-      </div>
-
-      <div className="space-y-6">
-        {/* Audio Type Selection */}
-        <div className="bg-white rounded-[24px] p-6 border border-gray-200 shadow-sm">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Audio Type</h3>
-          <div className="flex gap-4">
-            <button
-              onClick={() => setAudioType('tts')}
-              className={`flex-1 p-6 border-2 rounded-2xl transition-all ${
-                audioType === 'tts'
-                  ? 'border-gray-900 bg-gray-50 shadow-lg'
-                  : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
-              }`}
-            >
-              <h4 className="font-bold text-gray-900 mb-1">Text-to-Speech</h4>
-              <p className="text-sm text-gray-600">
-                Generate voice from your script
-              </p>
-            </button>
-            <button
-              onClick={() => setAudioType('sts')}
-              className={`flex-1 p-6 border-2 rounded-2xl transition-all ${
-                audioType === 'sts'
-                  ? 'border-gray-900 bg-gray-50 shadow-lg'
-                  : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
-              }`}
-            >
-              <h4 className="font-bold text-gray-900 mb-1">Speech-to-Speech</h4>
-              <p className="text-sm text-gray-600">
-                Upload your own voice recording
-              </p>
-            </button>
-          </div>
-        </div>
-
-        {/* TTS Settings */}
-        {audioType === 'tts' && (
-          <>
-            <Select
-              label="Voice"
-              value={selectedVoiceId}
-              onChange={setSelectedVoiceId}
-              options={voices.map((v) => ({
-                value: v.id,
-                label: `${v.name} (${v.accent})`,
-              }))}
-              placeholder="Select a voice"
-            />
-
-            <Card>
-              <CardHeader>
-                <h3 className="text-lg font-semibold">Voice Settings</h3>
-              </CardHeader>
-              <CardBody className="space-y-6">
-                <Slider
-                  label="Speed"
-                  value={voiceSettings.speed}
-                  onChange={(v) =>
-                    setVoiceSettings({ ...voiceSettings, speed: v })
-                  }
-                  min={1.0}
-                  max={1.5}
-                  step={0.1}
-                  leftLabel="Natural"
-                  rightLabel="Fast"
-                  helperText="1.1x recommended for TikTok and fast-paced content"
-                />
-
-                <Slider
-                  label="Stability"
-                  value={voiceSettings.stability}
-                  onChange={(v) =>
-                    setVoiceSettings({ ...voiceSettings, stability: v })
-                  }
-                  min={0.0}
-                  max={1.0}
-                  step={0.05}
-                  leftLabel="Variable"
-                  rightLabel="Stable"
-                  helperText="0.5 recommended for natural, human-like feel"
-                />
-
-                <Slider
-                  label="Similarity"
-                  value={voiceSettings.similarity}
-                  onChange={(v) =>
-                    setVoiceSettings({ ...voiceSettings, similarity: v })
-                  }
-                  min={0.0}
-                  max={1.0}
-                  step={0.05}
-                  leftLabel="Varied"
-                  rightLabel="Accurate"
-                  helperText="0.75 recommended for TTS"
-                />
-
-                <Slider
-                  label="Style Exaggeration"
-                  value={voiceSettings.styleExaggeration}
-                  onChange={(v) =>
-                    setVoiceSettings({ ...voiceSettings, styleExaggeration: v })
-                  }
-                  min={0.0}
-                  max={1.0}
-                  step={0.05}
-                  leftLabel="Neutral"
-                  rightLabel="Expressive"
-                  helperText="0.3 recommended for friendly, subtle emotion"
-                />
-              </CardBody>
-            </Card>
-          </>
-        )}
-
-        {/* STS Upload */}
-        {audioType === 'sts' && (
-          <Card>
-            <CardHeader>
-              <h3 className="text-lg font-semibold">Upload Audio</h3>
-            </CardHeader>
-            <CardBody>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <input
-                  type="file"
-                  accept="audio/mp3,audio/mp4"
-                  onChange={(e) => setAudioFile(e.target.files?.[0] || null)}
-                  className="hidden"
-                  id="audio-upload"
-                />
-                <label
-                  htmlFor="audio-upload"
-                  className="cursor-pointer text-blue-600 hover:text-blue-700 font-semibold"
-                >
-                  Click to upload
-                </label>
-                <p className="text-sm text-gray-600 mt-2">
-                  MP3 or MP4 format
-                </p>
-                {audioFile && (
-                  <p className="text-sm text-green-600 mt-2 font-semibold">
-                    {audioFile.name}
-                  </p>
-                )}
-              </div>
-            </CardBody>
-          </Card>
-        )}
-
-        {/* Aspect Ratio */}
-        <Select
-          label="Aspect Ratio"
-          value={aspectRatio}
-          onChange={(v) => setAspectRatio(v as VideoAspectRatio)}
-          options={[
-            { value: '9:16', label: '9:16 - TikTok/Reels (Vertical)' },
-            { value: '16:9', label: '16:9 - YouTube (Horizontal)' },
-            { value: '1:1', label: '1:1 - Instagram Post (Square)' },
-          ]}
-        />
-      </div>
-
-      <div className="mt-6 flex gap-3">
-        <Button variant="outline" onClick={() => setStep('script')}>
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back
-        </Button>
-        <Button variant="primary" onClick={() => setStep('review')} className="flex-1">
-          Continue to Review
-        </Button>
-      </div>
-    </div>
-  );
-
-  // Step 5: Review and Generate
-  const renderReviewStep = () => (
-    <div className="max-w-4xl mx-auto">
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2 tracking-tight">Review & Generate</h2>
-        <p className="text-lg text-gray-600">
-          Review your video settings before generating
-        </p>
-      </div>
-
-      {error && (
-        <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-2xl flex items-start gap-3">
-          <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-red-600 font-medium">{error}</p>
-        </div>
-      )}
-
-      <div className="space-y-6">
-        {/* Project Type */}
-        <Card>
-          <CardHeader>
-            <h3 className="text-lg font-semibold">Project Type</h3>
-          </CardHeader>
-          <CardBody>
-            <p className="text-gray-900">
-              {projectType === 'talking_actor' ? 'Talking Actor' : 'Gesture Only'}
-            </p>
-          </CardBody>
-        </Card>
-
-        {/* Avatar */}
-        {selectedAvatar && (
-          <Card>
-            <CardHeader>
-              <h3 className="text-lg font-semibold">Avatar</h3>
-            </CardHeader>
-            <CardBody className="flex items-center gap-4">
-              <img
-                src={selectedAvatar.previewUrl}
-                alt={selectedAvatar.name}
-                className="h-20 w-20 rounded-lg object-cover"
-              />
-              <div>
-                <p className="font-semibold text-gray-900">{selectedAvatar.name}</p>
-                <p className="text-sm text-gray-600">
-                  {selectedAvatar.tags.slice(0, 3).join(', ')}
-                </p>
-              </div>
-            </CardBody>
-          </Card>
-        )}
-
-        {/* Script/Gesture */}
-        <Card>
-          <CardHeader>
-            <h3 className="text-lg font-semibold">
-              {projectType === 'talking_actor' ? 'Script' : 'Gesture Prompt'}
-            </h3>
-          </CardHeader>
-          <CardBody>
-            <p className="text-gray-900 whitespace-pre-wrap">
-              {projectType === 'talking_actor' ? scriptText : gesturePrompt}
-            </p>
-          </CardBody>
-        </Card>
-
-        {/* Voice (if TTS) */}
-        {projectType === 'talking_actor' && audioType === 'tts' && (
-          <Card>
-            <CardHeader>
-              <h3 className="text-lg font-semibold">Voice Settings</h3>
-            </CardHeader>
-            <CardBody className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Voice:</span>
-                <span className="font-semibold">
-                  {voices.find((v) => v.id === selectedVoiceId)?.name || 'Not selected'}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Speed:</span>
-                <span className="font-semibold">{voiceSettings.speed}x</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Aspect Ratio:</span>
-                <span className="font-semibold">{aspectRatio}</span>
-              </div>
-            </CardBody>
-          </Card>
-        )}
-
-        {/* Credits */}
-        <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-[24px] p-6 border-2 border-green-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600 font-medium">Credits Required</p>
-              <p className="text-3xl font-bold text-gray-900">2 Credits</p>
-            </div>
-            <div className="text-right">
-              <p className="text-sm text-gray-600 font-medium">Your Balance</p>
-              <p className="text-3xl font-bold text-green-600">{user?.credits} Credits</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-6 flex gap-3">
-        <Button
-          variant="outline"
-          onClick={() => setStep(projectType === 'talking_actor' ? 'voice' : 'script')}
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back
-        </Button>
-        <Button
-          variant="primary"
-          onClick={handleCreateProject}
-          loading={creating}
-          disabled={creating || (user?.credits || 0) < 2}
-          className="flex-1"
-        >
-          <Sparkles className="mr-2 h-5 w-5" />
-          Generate Video (2 Credits)
-        </Button>
-      </div>
-    </div>
-  );
-
-  return (
-    <div className="min-h-screen bg-[#F3F4F6]">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-4">
-            <Button
-              variant="ghost"
-              onClick={() => router.push('/dashboard')}
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Dashboard
-            </Button>
-
-            <div className="flex items-center gap-2 px-4 py-2 bg-green-50 rounded-2xl border border-green-200">
-              <Sparkles className="h-4 w-4 text-green-600" />
-              <span className="text-sm font-bold text-gray-900">
-                {user?.credits || 0} Credits
-              </span>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Progress Steps */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-center gap-2">
-            {['type', 'avatar', 'script', projectType === 'talking_actor' && 'voice', 'review']
-              .filter(Boolean)
-              .map((s, idx, arr) => (
-                <React.Fragment key={s}>
-                  <div
-                    className={`flex items-center gap-2 ${
-                      arr.indexOf(step) >= idx
-                        ? 'text-gray-900'
-                        : 'text-gray-400'
-                    }`}
-                  >
-                    <div
-                      className={`h-10 w-10 rounded-full flex items-center justify-center font-bold ${
-                        arr.indexOf(step) >= idx
-                          ? 'bg-gray-900 text-white'
-                          : 'bg-gray-200 text-gray-600'
-                      }`}
-                    >
-                      {idx + 1}
-                    </div>
-                    <span className="text-sm font-bold hidden sm:inline">
-                      {s === 'type'
-                        ? 'Type'
-                        : s === 'avatar'
-                        ? 'Avatar'
-                        : s === 'script'
-                        ? 'Script'
-                        : s === 'voice'
-                        ? 'Voice'
-                        : 'Review'}
-                    </span>
-                  </div>
-                  {idx < arr.length - 1 && (
-                    <div
-                      className={`h-1 w-8 sm:w-16 rounded-full ${
-                        arr.indexOf(step) > idx ? 'bg-gray-900' : 'bg-gray-300'
-                      }`}
-                    />
-                  )}
-                </React.Fragment>
-              ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-        {step === 'type' && renderTypeStep()}
-        {step === 'avatar' && renderAvatarStep()}
-        {step === 'script' && renderScriptStep()}
-        {step === 'voice' && renderVoiceStep()}
-        {step === 'review' && renderReviewStep()}
-      </main>
     </div>
   );
 }
@@ -792,7 +454,9 @@ function CreateProjectContent() {
 export default function CreateProjectPage() {
   return (
     <ProtectedRoute>
-      <CreateProjectContent />
+      <AppLayout>
+        <CreateProjectContent />
+      </AppLayout>
     </ProtectedRoute>
   );
 }

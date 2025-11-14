@@ -4,18 +4,15 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { AppLayout } from '@/components/layout/AppLayout';
 import {
-  LayoutGrid,
   Plus,
   Search,
-  Folder,
-  Settings,
   Video,
   Mic,
   ChevronDown,
   Bell,
   CreditCard,
-  MoreHorizontal,
   Play,
 } from 'lucide-react';
 import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
@@ -132,36 +129,9 @@ const AvatarDrawer: React.FC<AvatarDrawerProps> = ({ isOpen, onClose, onSelect }
   );
 };
 
-// Helper for Sidebar Items
-interface NavItemProps {
-  icon: React.ReactNode;
-  label: string;
-  active?: boolean;
-  onClick?: () => void;
-}
-
-function NavItem({ icon, label, active, onClick }: NavItemProps) {
-  return (
-    <div
-      onClick={onClick}
-      className={`
-      flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200
-      ${
-        active
-          ? 'bg-white shadow-sm text-gray-900 font-semibold border border-gray-100'
-          : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
-      }
-    `}
-    >
-      <div className={active ? 'text-black' : 'text-gray-400'}>{icon}</div>
-      <span className="text-sm">{label}</span>
-    </div>
-  );
-}
-
 // --- MAIN DASHBOARD COMPONENT ---
 function DashboardContent() {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -202,21 +172,7 @@ function DashboardContent() {
     }
   };
 
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      router.push('/');
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
-  };
-
   const handleNewProject = () => {
-    setIsDrawerOpen(true);
-  };
-
-  const handleAvatarSelected = () => {
-    // Navigate to create page after avatar selection
     router.push('/create');
   };
 
@@ -256,58 +212,9 @@ function DashboardContent() {
   };
 
   return (
-    <div className="flex h-screen bg-[#F3F4F6] font-sans text-gray-900">
-      {/* --- SIDEBAR (Fixed Left) --- */}
-      <aside className="w-72 flex flex-col p-6">
-        {/* Logo */}
-        <div className="flex items-center gap-3 px-2 mb-10">
-          <div className="w-8 h-8 bg-gray-900 rounded-xl flex items-center justify-center">
-            <div className="w-4 h-4 border-2 border-white rounded-full"></div>
-          </div>
-          <span className="font-bold text-lg tracking-tight">VideoAI</span>
-        </div>
-
-        {/* Nav Menu */}
-        <nav className="space-y-1 flex-1">
-          <NavItem icon={<LayoutGrid size={20} />} label="Dashboard" active />
-          <NavItem icon={<Video size={20} />} label="My Projects" />
-          <NavItem icon={<Folder size={20} />} label="Assets" />
-
-          <div className="pt-6 pb-2">
-            <p className="px-3 text-xs font-medium text-gray-400 uppercase tracking-wider">
-              Workspace
-            </p>
-          </div>
-
-          <NavItem icon={<Mic size={20} />} label="Voices" />
-          <NavItem icon={<Settings size={20} />} label="Settings" />
-        </nav>
-
-        {/* User Profile (Bottom) */}
-        <div className="mt-auto bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-3 cursor-pointer hover:bg-gray-50">
-          <div className="w-10 h-10 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full overflow-hidden border border-white shadow-inner">
-            {user?.photoURL ? (
-              <img src={user.photoURL} alt="User" className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-600 font-bold">
-                {user?.email?.[0].toUpperCase()}
-              </div>
-            )}
-          </div>
-          <div className="flex-1">
-            <div className="text-sm font-bold text-gray-900">
-              {user?.displayName || user?.email?.split('@')[0] || 'User'}
-            </div>
-            <div className="text-xs text-gray-500">{user?.plan || 'Free Plan'}</div>
-          </div>
-          <button onClick={handleSignOut}>
-            <MoreHorizontal className="text-gray-400 w-4 h-4" />
-          </button>
-        </div>
-      </aside>
-
+    <>
       {/* --- MAIN CONTENT --- */}
-      <main className="flex-1 p-4 pl-0 overflow-hidden">
+      <div className="p-4 overflow-hidden h-full">
         <div className="bg-white h-full rounded-[40px] shadow-sm border border-gray-200/60 overflow-y-auto flex flex-col">
           {/* Header */}
           <header className="h-20 px-8 flex items-center justify-between border-b border-gray-100 sticky top-0 bg-white/80 backdrop-blur z-10">
@@ -329,9 +236,6 @@ function DashboardContent() {
               <button className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50">
                 <Bell className="w-4 h-4 text-gray-600" />
               </button>
-              <div className="px-4 py-2 bg-black text-white rounded-full text-sm font-medium flex items-center gap-2 shadow-lg shadow-gray-200">
-                <CreditCard className="w-3 h-3" /> {user?.credits || 0} Credits
-              </div>
             </div>
           </header>
 
@@ -483,22 +387,24 @@ function DashboardContent() {
             </div>
           </div>
         </div>
-      </main>
+      </div>
 
       {/* Render the Drawer Component */}
       <AvatarDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
-        onSelect={handleAvatarSelected}
+        onSelect={() => router.push('/create')}
       />
-    </div>
+    </>
   );
 }
 
 export default function DashboardPage() {
   return (
     <ProtectedRoute>
-      <DashboardContent />
+      <AppLayout>
+        <DashboardContent />
+      </AppLayout>
     </ProtectedRoute>
   );
 }
