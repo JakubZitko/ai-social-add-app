@@ -26,6 +26,12 @@ import {
   Wand2,
   Settings as SettingsIcon,
   Eye,
+  Smile,
+  HandIcon,
+  ThumbsUp,
+  Users,
+  Brain,
+  Heart,
 } from 'lucide-react';
 import { ProjectType, VoiceSettings, AudioType, VideoAspectRatio, AvatarFilters as AvatarFiltersType } from '@/types';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
@@ -42,6 +48,7 @@ function CreateProjectContent() {
   const [selectedAvatarId, setSelectedAvatarId] = useState<string>('');
   const [scriptText, setScriptText] = useState('');
   const [gesturePrompt, setGesturePrompt] = useState('');
+  const [selectedGesture, setSelectedGesture] = useState<string>('');
   const [selectedVoiceId, setSelectedVoiceId] = useState('');
   const [audioType, setAudioType] = useState<AudioType>('tts');
   const [audioFile, setAudioFile] = useState<File | null>(null);
@@ -53,14 +60,96 @@ function CreateProjectContent() {
     styleExaggeration: 0.3,
   });
 
+  // Available gestures for gesture_only mode
+  const gestures = [
+    { id: 'laughing', name: 'Laughing', icon: Smile, description: 'Joyful laughter' },
+    { id: 'pointing', name: 'Pointing', icon: HandIcon, description: 'Pointing gesture' },
+    { id: 'thumbs_up', name: 'Thumbs Up', icon: ThumbsUp, description: 'Approval sign' },
+    { id: 'nodding', name: 'Nodding', icon: Users, description: 'Agreeing nod' },
+    { id: 'waving', name: 'Waving', icon: Hand, description: 'Friendly wave' },
+    { id: 'thinking', name: 'Thinking', icon: Brain, description: 'Thoughtful pose' },
+  ];
+
   // UI state
   const [showAvatarModal, setShowAvatarModal] = useState(false);
   const [avatarFilters, setAvatarFilters] = useState<AvatarFiltersType>({});
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState('');
+  const [previewingVoice, setPreviewingVoice] = useState(false);
+  const [voicePreviewUrl, setVoicePreviewUrl] = useState<string | null>(null);
+  const [enhancingScript, setEnhancingScript] = useState(false);
+  const [scriptTone, setScriptTone] = useState<string>('professional');
+  const [scriptGoal, setScriptGoal] = useState<string>('inform');
 
   const filteredAvatars = filterAvatars(avatarFilters);
   const selectedAvatar = avatars.find((a) => a.id === selectedAvatarId);
+  const selectedVoice = voices.find((v) => v.id === selectedVoiceId);
+
+  const handleVoicePreview = async () => {
+    if (!selectedVoiceId) {
+      setError('Please select a voice first');
+      return;
+    }
+
+    try {
+      setPreviewingVoice(true);
+      setError('');
+
+      // Use first 100 characters of script or default preview text
+      const previewText = scriptText
+        ? scriptText.slice(0, 100) + (scriptText.length > 100 ? '...' : '')
+        : 'Hi! This is a preview of how this voice sounds. You can use this to decide if this voice fits your video.';
+
+      // TODO: In production, this would call the backend API endpoint
+      // that generates a 5-second preview using ElevenLabs API
+      // For now, we'll use the voice's sample if available
+      const voice = voices.find((v) => v.id === selectedVoiceId);
+
+      if (voice?.previewUrl) {
+        setVoicePreviewUrl(voice.previewUrl);
+
+        // Play the preview audio
+        const audio = new Audio(voice.previewUrl);
+        audio.play();
+      } else {
+        setError('Voice preview not available. This will work once connected to ElevenLabs API.');
+      }
+    } catch (err: any) {
+      console.error('Error previewing voice:', err);
+      setError(err.message || 'Failed to preview voice');
+    } finally {
+      setPreviewingVoice(false);
+    }
+  };
+
+  const handleEnhanceScript = async () => {
+    if (!scriptText.trim()) {
+      setError('Please enter a script first');
+      return;
+    }
+
+    try {
+      setEnhancingScript(true);
+      setError('');
+
+      // TODO: In production, this would call the backend API endpoint
+      // that uses OpenAI GPT-4 to enhance the script
+      // For now, we'll simulate the enhancement
+      const prompt = `Rewrite the following script with a ${scriptTone} tone to ${scriptGoal}. Keep it concise and engaging:\n\n${scriptText}`;
+
+      // Simulated enhancement (in production, this would call the API)
+      // For demonstration, we'll just add a prefix
+      const enhancedText = `[AI Enhanced - ${scriptTone} tone for ${scriptGoal}ing]\n\n${scriptText}`;
+
+      setScriptText(enhancedText);
+      setError('Script enhanced! (This is a demo - full AI enhancement will work once connected to OpenAI API)');
+    } catch (err: any) {
+      console.error('Error enhancing script:', err);
+      setError(err.message || 'Failed to enhance script');
+    } finally {
+      setEnhancingScript(false);
+    }
+  };
 
   const handleCreateProject = async () => {
     // Validation
@@ -74,8 +163,8 @@ function CreateProjectContent() {
       return;
     }
 
-    if (projectType === 'gesture_only' && !gesturePrompt.trim()) {
-      setError('Please enter a gesture prompt');
+    if (projectType === 'gesture_only' && !selectedGesture) {
+      setError('Please select a gesture');
       return;
     }
 
@@ -102,6 +191,7 @@ function CreateProjectContent() {
         status: 'draft',
         scriptText: projectType === 'talking_actor' ? scriptText : '',
         gesturePrompt: projectType === 'gesture_only' ? gesturePrompt : '',
+        selectedGesture: projectType === 'gesture_only' ? selectedGesture : '',
         selectedAvatarId,
         selectedVoiceId: audioType === 'tts' ? selectedVoiceId : '',
         voiceSettings,
@@ -226,18 +316,58 @@ function CreateProjectContent() {
             )}
           </div>
 
-          {/* Section 3: Script/Gesture */}
-          <div className="mb-8">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <Wand2 className="h-4 w-4 text-white" />
+          {/* Section 3: Gesture Selection (gesture_only only) */}
+          {projectType === 'gesture_only' && (
+            <div className="mb-8">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center">
+                  <Hand className="h-4 w-4 text-white" />
+                </div>
+                <h2 className="text-lg font-bold text-gray-900">Select Gesture</h2>
               </div>
-              <h2 className="text-lg font-bold text-gray-900">
-                {projectType === 'talking_actor' ? 'Script' : 'Gesture'}
-              </h2>
-            </div>
 
-            {projectType === 'talking_actor' ? (
+              <div className="grid grid-cols-2 gap-3">
+                {gestures.map((gesture) => {
+                  const Icon = gesture.icon;
+                  const isSelected = selectedGesture === gesture.id;
+                  return (
+                    <button
+                      key={gesture.id}
+                      onClick={() => setSelectedGesture(gesture.id)}
+                      className={`p-4 rounded-2xl border-2 transition-all text-left ${
+                        isSelected
+                          ? 'border-gray-900 bg-gray-50 shadow-lg'
+                          : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
+                      }`}
+                    >
+                      <Icon
+                        className={`h-6 w-6 mb-2 ${
+                          isSelected ? 'text-gray-900' : 'text-gray-400'
+                        }`}
+                      />
+                      <div className="font-bold text-sm text-gray-900">
+                        {gesture.name}
+                      </div>
+                      <div className="text-xs text-gray-600 mt-1">
+                        {gesture.description}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Section 4: Script (talking_actor only) */}
+          {projectType === 'talking_actor' && (
+            <div className="mb-8">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <Wand2 className="h-4 w-4 text-white" />
+                </div>
+                <h2 className="text-lg font-bold text-gray-900">Script</h2>
+              </div>
+
               <Textarea
                 label=""
                 value={scriptText}
@@ -248,20 +378,66 @@ function CreateProjectContent() {
                 placeholder="Enter the text your avatar will speak..."
                 className="font-mono"
               />
-            ) : (
-              <Textarea
-                label=""
-                value={gesturePrompt}
-                onChange={(e) => setGesturePrompt(e.target.value)}
-                rows={4}
-                maxLength={500}
-                showCharCount
-                placeholder="Describe the gesture you want..."
-              />
-            )}
-          </div>
 
-          {/* Section 4: Voice (only for talking_actor) */}
+              {/* AI Enhancement Controls */}
+              <div className="mt-4 bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-4 border-2 border-purple-200">
+                <div className="flex items-center gap-2 mb-3">
+                  <Sparkles className="h-4 w-4 text-purple-600" />
+                  <h3 className="text-sm font-bold text-gray-900">AI Script Enhancement</h3>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 mb-3">
+                  <Select
+                    label="Tone"
+                    value={scriptTone}
+                    onChange={setScriptTone}
+                    options={[
+                      { value: 'professional', label: 'Professional' },
+                      { value: 'casual', label: 'Casual' },
+                      { value: 'friendly', label: 'Friendly' },
+                      { value: 'persuasive', label: 'Persuasive' },
+                      { value: 'enthusiastic', label: 'Enthusiastic' },
+                      { value: 'authoritative', label: 'Authoritative' },
+                    ]}
+                  />
+
+                  <Select
+                    label="Goal"
+                    value={scriptGoal}
+                    onChange={setScriptGoal}
+                    options={[
+                      { value: 'inform', label: 'Inform' },
+                      { value: 'sell', label: 'Sell' },
+                      { value: 'entertain', label: 'Entertain' },
+                      { value: 'educate', label: 'Educate' },
+                      { value: 'inspire', label: 'Inspire' },
+                      { value: 'persuade', label: 'Persuade' },
+                    ]}
+                  />
+                </div>
+
+                <button
+                  onClick={handleEnhanceScript}
+                  disabled={enhancingScript || !scriptText.trim()}
+                  className="w-full px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {enhancingScript ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Enhancing...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4" />
+                      Enhance with AI
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Section 5: Voice (only for talking_actor) */}
           {projectType === 'talking_actor' && (
             <div className="mb-8">
               <div className="flex items-center gap-2 mb-4">
@@ -271,26 +447,52 @@ function CreateProjectContent() {
                 <h2 className="text-lg font-bold text-gray-900">Voice Settings</h2>
               </div>
 
-              <Select
-                label="Voice"
-                value={selectedVoiceId}
-                onChange={setSelectedVoiceId}
-                options={voices.map((v) => ({
-                  value: v.id,
-                  label: `${v.name} (${v.accent})`,
-                }))}
-                placeholder="Select a voice"
-              />
+              <div className="space-y-3">
+                <Select
+                  label="Voice"
+                  value={selectedVoiceId}
+                  onChange={setSelectedVoiceId}
+                  options={voices.map((v) => ({
+                    value: v.id,
+                    label: `${v.name} (${v.accent})`,
+                  }))}
+                  placeholder="Select a voice"
+                />
+
+                {selectedVoiceId && (
+                  <button
+                    onClick={handleVoicePreview}
+                    disabled={previewingVoice}
+                    className="w-full px-4 py-2.5 bg-green-50 hover:bg-green-100 border-2 border-green-200 text-green-700 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  >
+                    {previewingVoice ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-green-700 border-t-transparent rounded-full animate-spin" />
+                        Playing Preview...
+                      </>
+                    ) : (
+                      <>
+                        <Play className="h-4 w-4" />
+                        Preview Voice
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
 
               <div className="mt-4 bg-white rounded-2xl p-4 border border-gray-200 space-y-4">
+                <h3 className="text-sm font-bold text-gray-900 mb-3">Advanced Tuning</h3>
+
                 <Slider
                   label="Speed"
                   value={voiceSettings.speed}
                   onChange={(v) => setVoiceSettings({ ...voiceSettings, speed: v })}
-                  min={1.0}
+                  min={0.5}
                   max={1.5}
                   step={0.1}
+                  helperText="Control the speaking pace"
                 />
+
                 <Slider
                   label="Stability"
                   value={voiceSettings.stability}
@@ -298,12 +500,33 @@ function CreateProjectContent() {
                   min={0.0}
                   max={1.0}
                   step={0.05}
+                  helperText="Higher = more consistent, lower = more expressive"
+                />
+
+                <Slider
+                  label="Similarity Boost"
+                  value={voiceSettings.similarity}
+                  onChange={(v) => setVoiceSettings({ ...voiceSettings, similarity: v })}
+                  min={0.0}
+                  max={1.0}
+                  step={0.05}
+                  helperText="Enhance voice clarity and similarity"
+                />
+
+                <Slider
+                  label="Style Exaggeration"
+                  value={voiceSettings.styleExaggeration}
+                  onChange={(v) => setVoiceSettings({ ...voiceSettings, styleExaggeration: v })}
+                  min={0.0}
+                  max={1.0}
+                  step={0.05}
+                  helperText="Amplify the speaker's style and emotion"
                 />
               </div>
             </div>
           )}
 
-          {/* Section 5: Format */}
+          {/* Section 6: Format */}
           <div className="mb-8">
             <Select
               label="Video Format"
@@ -320,7 +543,7 @@ function CreateProjectContent() {
           {/* Generate Button */}
           <button
             onClick={handleCreateProject}
-            disabled={creating || !selectedAvatarId || (projectType === 'talking_actor' ? !scriptText.trim() : !gesturePrompt.trim())}
+            disabled={creating || !selectedAvatarId || (projectType === 'talking_actor' ? !scriptText.trim() : !selectedGesture)}
             className="w-full bg-gray-900 text-white px-6 py-4 rounded-2xl font-bold hover:bg-gray-800 transition-all shadow-lg shadow-gray-900/20 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {creating ? (
@@ -385,6 +608,27 @@ function CreateProjectContent() {
                 <div className="text-xs text-gray-600 mb-2">Script Preview</div>
                 <div className="text-sm text-gray-900 line-clamp-3">
                   {scriptText}
+                </div>
+              </div>
+            )}
+
+            {selectedGesture && projectType === 'gesture_only' && (
+              <div className="bg-white rounded-2xl p-4 border border-gray-200 text-left">
+                <div className="text-xs text-gray-600 mb-2">Selected Gesture</div>
+                <div className="flex items-center gap-2">
+                  {(() => {
+                    const gesture = gestures.find((g) => g.id === selectedGesture);
+                    if (!gesture) return null;
+                    const Icon = gesture.icon;
+                    return (
+                      <>
+                        <Icon className="h-5 w-5 text-gray-900" />
+                        <span className="font-bold text-sm text-gray-900">
+                          {gesture.name}
+                        </span>
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
             )}

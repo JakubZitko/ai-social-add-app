@@ -56,7 +56,19 @@ export type AvatarEmotion =
   | 'frustrated'
   | 'sad'
   | 'serious'
-  | 'smiling';
+  | 'smiling'
+  | 'happy'
+  | 'neutral'
+  | 'friendly'
+  | 'professional';
+
+export type AvatarSituation =
+  | 'office'
+  | 'outdoor'
+  | 'studio'
+  | 'casual'
+  | 'business'
+  | 'creative';
 
 export type AvatarSkinTone =
   | 'very_light'
@@ -78,6 +90,7 @@ export interface Avatar {
   experience: AvatarExperience;
   accessories: AvatarAccessory[];
   emotions: AvatarEmotion[];
+  situation?: AvatarSituation[];
   skinTone: AvatarSkinTone;
   backgroundUrl?: string;
   defaultVoiceId?: string;
@@ -162,6 +175,7 @@ export interface AvatarFilters {
   experience?: AvatarExperience[];
   accessories?: AvatarAccessory[];
   emotions?: AvatarEmotion[];
+  situation?: AvatarSituation[];
   skinTone?: AvatarSkinTone[];
   search?: string;
   showPopularOnly?: boolean;

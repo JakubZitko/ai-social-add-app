@@ -37,6 +37,7 @@ export function AvatarFilters({ filters, onFilterChange, resultCount }: AvatarFi
     filters.experience?.length ||
     filters.accessories?.length ||
     filters.emotions?.length ||
+    filters.situation?.length ||
     filters.skinTone?.length ||
     filters.search ||
     filters.showPopularOnly;
@@ -88,10 +89,10 @@ export function AvatarFilters({ filters, onFilterChange, resultCount }: AvatarFi
                 <button
                   key={gender}
                   onClick={() => toggleArrayFilter('gender', gender)}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  className={`px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${
                     filters.gender?.includes(gender as any)
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white text-gray-700 border border-gray-300 hover:border-blue-500'
+                      ? 'bg-gray-900 text-white shadow-lg'
+                      : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-gray-400'
                   }`}
                 >
                   {gender.charAt(0).toUpperCase() + gender.slice(1)}
@@ -108,10 +109,10 @@ export function AvatarFilters({ filters, onFilterChange, resultCount }: AvatarFi
                 <button
                   key={age}
                   onClick={() => toggleArrayFilter('age', age)}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  className={`px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${
                     filters.age?.includes(age as any)
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white text-gray-700 border border-gray-300 hover:border-blue-500'
+                      ? 'bg-gray-900 text-white shadow-lg'
+                      : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-gray-400'
                   }`}
                 >
                   {age.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
@@ -124,17 +125,57 @@ export function AvatarFilters({ filters, onFilterChange, resultCount }: AvatarFi
           <div>
             <h4 className="text-sm font-semibold text-gray-900 mb-2">Emotions</h4>
             <div className="flex flex-wrap gap-2">
-              {['calm', 'enthusiastic', 'excited', 'smiling', 'serious'].map((emotion) => (
+              {['happy', 'neutral', 'smiling', 'serious', 'excited', 'calm', 'friendly', 'professional'].map((emotion) => (
                 <button
                   key={emotion}
                   onClick={() => toggleArrayFilter('emotions', emotion)}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  className={`px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${
                     filters.emotions?.includes(emotion as any)
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white text-gray-700 border border-gray-300 hover:border-blue-500'
+                      ? 'bg-gray-900 text-white shadow-lg'
+                      : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-gray-400'
                   }`}
                 >
                   {emotion.charAt(0).toUpperCase() + emotion.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Accessories */}
+          <div>
+            <h4 className="text-sm font-semibold text-gray-900 mb-2">Accessories</h4>
+            <div className="flex flex-wrap gap-2">
+              {['glasses', 'hat', 'jewelry', 'headphones', 'suit', 'casual_wear'].map((accessory) => (
+                <button
+                  key={accessory}
+                  onClick={() => toggleArrayFilter('accessories', accessory)}
+                  className={`px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${
+                    filters.accessories?.includes(accessory as any)
+                      ? 'bg-purple-600 text-white shadow-lg'
+                      : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-purple-400'
+                  }`}
+                >
+                  {accessory.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Situation/Setting */}
+          <div>
+            <h4 className="text-sm font-semibold text-gray-900 mb-2">Situation</h4>
+            <div className="flex flex-wrap gap-2">
+              {['office', 'outdoor', 'studio', 'casual', 'business', 'creative'].map((situation) => (
+                <button
+                  key={situation}
+                  onClick={() => toggleArrayFilter('situation', situation)}
+                  className={`px-3 py-1.5 rounded-xl text-sm font-medium transition-all ${
+                    filters.situation?.includes(situation as any)
+                      ? 'bg-blue-600 text-white shadow-lg'
+                      : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-blue-400'
+                  }`}
+                >
+                  {situation.charAt(0).toUpperCase() + situation.slice(1)}
                 </button>
               ))}
             </div>
@@ -147,9 +188,9 @@ export function AvatarFilters({ filters, onFilterChange, resultCount }: AvatarFi
               type="checkbox"
               checked={filters.showPopularOnly || false}
               onChange={(e) => updateFilter('showPopularOnly', e.target.checked)}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              className="h-4 w-4 text-gray-900 focus:ring-gray-900 border-gray-300 rounded"
             />
-            <label htmlFor="popular-only" className="ml-2 text-sm text-gray-700">
+            <label htmlFor="popular-only" className="ml-2 text-sm font-semibold text-gray-700">
               Show popular avatars only
             </label>
           </div>
