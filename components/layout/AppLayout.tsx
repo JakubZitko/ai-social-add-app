@@ -15,6 +15,7 @@ import {
   Sparkles,
   CreditCard,
   Film,
+  Calendar,
 } from 'lucide-react';
 
 interface NavItemProps {
@@ -114,6 +115,12 @@ export function AppLayout({ children }: AppLayoutProps) {
             label="Scene Generator"
             href="/scenes"
             active={pathname === '/scenes'}
+          />
+          <NavItem
+            icon={<Calendar size={20} />}
+            label="Posting Calendar"
+            href="/posts"
+            active={pathname === '/posts'}
           />
           <NavItem
             icon={<Mic size={20} />}
