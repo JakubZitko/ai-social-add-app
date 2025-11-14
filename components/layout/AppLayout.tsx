@@ -17,6 +17,7 @@ import {
   Film,
   Calendar,
   Layers,
+  Zap,
 } from 'lucide-react';
 
 interface NavItemProps {
@@ -128,6 +129,12 @@ export function AppLayout({ children }: AppLayoutProps) {
             label="Bulk Generation"
             href="/batches/new"
             active={pathname === '/batches/new'}
+          />
+          <NavItem
+            icon={<Zap size={20} />}
+            label="Automations"
+            href="/automations"
+            active={pathname === '/automations'}
           />
           <NavItem
             icon={<Mic size={20} />}
