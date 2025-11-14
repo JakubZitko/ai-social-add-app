@@ -14,6 +14,7 @@ import {
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase/config';
 import { User } from '@/types';
+import { initializeUser } from '@/lib/firestore/init';
 
 interface AuthContextType {
   user: User | null;
@@ -61,16 +62,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const userDoc = await getDoc(userRef);
 
     if (!userDoc.exists()) {
-      // Create new user document with 5 free credits
-      await setDoc(userRef, {
-        email: firebaseUser.email,
-        displayName: firebaseUser.displayName || '',
-        photoURL: firebaseUser.photoURL || '',
-        credits: 5,
-        plan: 'free',
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
+      // Initialize new user with full settings (10 free credits)
+      await initializeUser(
+        firebaseUser.uid,
+        firebaseUser.email || '',
+        firebaseUser.displayName || undefined
+      );
+      console.log('✅ New user initialized with 10 free credits');
     }
 
     return fetchUserData(firebaseUser.uid);
