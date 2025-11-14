@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
@@ -16,50 +16,56 @@ import {
   Users,
   TrendingUp,
   BarChart3,
+  Loader,
 } from 'lucide-react';
 import { FaTiktok } from 'react-icons/fa';
 import { Instagram, Youtube } from 'lucide-react';
-
-interface SocialConnection {
-  platform: 'tiktok' | 'instagram' | 'youtube';
-  connected: boolean;
-  username?: string;
-  profileUrl?: string;
-  followers?: number;
-  connectedAt?: Date;
-  permissions?: string[];
-}
+import { collection, query, where, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { db } from '@/lib/firebase/config';
+import { SocialConnection } from '@/lib/firestore/types';
 
 function SocialConnectionsContent() {
   const router = useRouter();
   const { user } = useAuth();
 
-  const [connections, setConnections] = useState<SocialConnection[]>([
-    {
-      platform: 'tiktok',
-      connected: true,
-      username: '@brandname',
-      profileUrl: 'https://tiktok.com/@brandname',
-      followers: 45200,
-      connectedAt: new Date('2025-10-15'),
-      permissions: ['read_profile', 'post_videos', 'read_analytics'],
-    },
-    {
-      platform: 'instagram',
-      connected: false,
-    },
-    {
-      platform: 'youtube',
-      connected: true,
-      username: 'Brand Channel',
-      profileUrl: 'https://youtube.com/@brandchannel',
-      followers: 12800,
-      connectedAt: new Date('2025-11-01'),
-      permissions: ['read_profile', 'upload_videos', 'read_analytics'],
-    },
-  ]);
-
+  const [connections, setConnections] = useState<SocialConnection[]>([]);
+  const [loading, setLoading] = useState(true);
   const [connecting, setConnecting] = useState<string | null>(null);
+
+  // Fetch social connections from Firestore
+  useEffect(() => {
+    const fetchConnections = async () => {
+      if (!user) return;
+
+      try {
+        setLoading(true);
+        const connectionsQuery = query(
+          collection(db, 'socialConnections'),
+          where('userId', '==', user.uid)
+        );
+        const snapshot = await getDocs(connectionsQuery);
+        const connectionsData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as SocialConnection[];
+
+        // Create a map of all platforms with their connection status
+        const platforms: ('tiktok' | 'instagram' | 'youtube')[] = ['tiktok', 'instagram', 'youtube'];
+        const fullConnections = platforms.map(platform => {
+          const existing = connectionsData.find(c => c.platform === platform);
+          return existing || { platform, connected: false };
+        });
+
+        setConnections(fullConnections);
+      } catch (error) {
+        console.error('Error fetching social connections:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchConnections();
+  }, [user]);
 
   const getPlatformInfo = (platform: string) => {
     switch (platform) {
@@ -132,15 +138,26 @@ function SocialConnectionsContent() {
     setConnecting(null);
   };
 
-  const handleDisconnect = (platform: string) => {
+  const handleDisconnect = async (platform: string) => {
     if (confirm(`Are you sure you want to disconnect ${getPlatformInfo(platform).name}?`)) {
-      setConnections(
-        connections.map((conn) =>
-          conn.platform === platform
-            ? { platform: conn.platform, connected: false }
-            : conn
-        )
-      );
+      try {
+        const connection = connections.find(c => c.platform === platform);
+        if (connection?.id) {
+          await deleteDoc(doc(db, 'socialConnections', connection.id));
+        }
+
+        // Update local state
+        setConnections(
+          connections.map((conn) =>
+            conn.platform === platform
+              ? { platform: conn.platform, connected: false }
+              : conn
+          )
+        );
+      } catch (error) {
+        console.error('Error disconnecting:', error);
+        alert('Failed to disconnect. Please try again.');
+      }
     }
   };
 

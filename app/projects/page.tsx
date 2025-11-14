@@ -125,6 +125,67 @@ function ProjectsContent() {
     }
   };
 
+  const handleDownloadVideo = async (videoUrl: string, title: string) => {
+    if (!videoUrl) {
+      alert('Video URL not available');
+      return;
+    }
+
+    try {
+      // Fetch the video file
+      const response = await fetch(videoUrl);
+      const blob = await response.blob();
+
+      // Create a download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${title.replace(/[^a-z0-9]/gi, '_')}.mp4`;
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading video:', error);
+      alert('Failed to download video. Please try again.');
+    }
+  };
+
+  const handleRetryGeneration = async (projectId: string) => {
+    if (!user) return;
+
+    try {
+      const token = await user.getIdToken();
+
+      const response = await fetch(`/api/video/retry/${projectId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to retry generation');
+      }
+
+      // Update project status locally
+      setProjects(projects.map(p =>
+        p.id === projectId ? { ...p, status: 'processing' as const } : p
+      ));
+
+      // Redirect to video status page
+      router.push(`/video/${projectId}`);
+    } catch (error: any) {
+      console.error('Error retrying generation:', error);
+      alert(error.message || 'Failed to retry generation. Please try again.');
+    }
+  };
+
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -341,13 +402,20 @@ function ProjectsContent() {
                           <Play className="h-4 w-4" />
                           View
                         </button>
-                        <button className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
+                        <button
+                          onClick={() => handleDownloadVideo(project.videoUrl || '', project.title)}
+                          className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+                          title="Download video"
+                        >
                           <Download className="h-5 w-5 text-gray-600" />
                         </button>
                       </>
                     )}
                     {project.status === 'failed' && (
-                      <button className="flex-1 px-4 py-2 bg-red-50 text-red-700 border border-red-200 rounded-xl text-sm font-semibold hover:bg-red-100 transition-colors">
+                      <button
+                        onClick={() => handleRetryGeneration(project.id)}
+                        className="flex-1 px-4 py-2 bg-red-50 text-red-700 border border-red-200 rounded-xl text-sm font-semibold hover:bg-red-100 transition-colors"
+                      >
                         Retry Generation
                       </button>
                     )}
