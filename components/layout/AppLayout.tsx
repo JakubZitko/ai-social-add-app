@@ -16,6 +16,7 @@ import {
   CreditCard,
   Film,
   Calendar,
+  Layers,
 } from 'lucide-react';
 
 interface NavItemProps {
@@ -121,6 +122,12 @@ export function AppLayout({ children }: AppLayoutProps) {
             label="Posting Calendar"
             href="/posts"
             active={pathname === '/posts'}
+          />
+          <NavItem
+            icon={<Layers size={20} />}
+            label="Bulk Generation"
+            href="/batches/new"
+            active={pathname === '/batches/new'}
           />
           <NavItem
             icon={<Mic size={20} />}
