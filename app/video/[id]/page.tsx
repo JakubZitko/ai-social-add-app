@@ -173,7 +173,7 @@ function VideoPageContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-[#F3F4F6] flex items-center justify-center">
         <Spinner size="lg" />
       </div>
     );
@@ -181,24 +181,26 @@ function VideoPageContent() {
 
   if (error || !project) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="max-w-md">
-          <CardBody className="text-center py-12">
-            <AlertCircle className="h-16 w-16 text-red-600 mx-auto mb-4" />
-            <h2 className="text-xl font-bold text-gray-900 mb-2">
+      <div className="min-h-screen bg-[#F3F4F6] flex items-center justify-center p-4">
+        <div className="max-w-md bg-white rounded-[32px] p-12 border border-gray-200 shadow-lg">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <AlertCircle className="h-8 w-8 text-red-600" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
               {error || 'Video not found'}
             </h2>
             <Button variant="primary" onClick={() => router.push('/dashboard')}>
               Back to Dashboard
             </Button>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#F3F4F6]">
       {/* Header */}
       <header className="bg-white border-b border-gray-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -236,60 +238,60 @@ function VideoPageContent() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Video Player */}
           <div className="lg:col-span-2">
-            <Card>
-              <CardBody className="p-0">
-                {project.status === 'completed' && project.outputUrl ? (
-                  <video
-                    src={project.outputUrl}
-                    controls
-                    className="w-full aspect-video bg-black rounded-t-lg"
-                  >
-                    Your browser does not support the video tag.
-                  </video>
-                ) : (
-                  <div className="aspect-video bg-gray-900 rounded-t-lg flex items-center justify-center">
-                    {project.status === 'processing' ? (
-                      <div className="text-center">
-                        <Spinner size="lg" className="mx-auto mb-4" />
-                        <p className="text-white text-lg font-semibold">
-                          Generating your video...
-                        </p>
-                        <p className="text-gray-400 text-sm mt-2">
-                          This usually takes 1-3 minutes
-                        </p>
+            <div className="bg-white rounded-[32px] overflow-hidden border border-gray-200 shadow-lg">
+              {project.status === 'completed' && project.outputUrl ? (
+                <video
+                  src={project.outputUrl}
+                  controls
+                  className="w-full aspect-video bg-black"
+                >
+                  Your browser does not support the video tag.
+                </video>
+              ) : (
+                <div className="aspect-video bg-gradient-to-br from-gray-900 to-gray-700 flex items-center justify-center">
+                  {project.status === 'processing' ? (
+                    <div className="text-center">
+                      <Spinner size="lg" className="mx-auto mb-4" />
+                      <p className="text-white text-xl font-bold">
+                        Generating your video...
+                      </p>
+                      <p className="text-gray-300 text-sm mt-2">
+                        This usually takes 1-3 minutes
+                      </p>
+                    </div>
+                  ) : project.status === 'failed' ? (
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <XCircle className="h-10 w-10 text-red-600" />
                       </div>
-                    ) : project.status === 'failed' ? (
-                      <div className="text-center">
-                        <XCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-                        <p className="text-white text-lg font-semibold">
-                          Video generation failed
-                        </p>
-                        <p className="text-gray-400 text-sm mt-2">
-                          {project.errorMessage || 'An error occurred'}
-                        </p>
+                      <p className="text-white text-xl font-bold">
+                        Video generation failed
+                      </p>
+                      <p className="text-gray-300 text-sm mt-2">
+                        {project.errorMessage || 'An error occurred'}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="text-center">
+                      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Play className="h-10 w-10 text-gray-900 ml-1" />
                       </div>
-                    ) : (
-                      <div className="text-center">
-                        <Play className="h-16 w-16 text-gray-600 mx-auto mb-4" />
-                        <p className="text-white text-lg font-semibold">
-                          Video preview unavailable
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </CardBody>
-            </Card>
+                      <p className="text-white text-xl font-bold">
+                        Video preview unavailable
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* Video Info */}
-            <Card className="mt-6">
-              <CardHeader>
-                <h3 className="text-lg font-semibold">Video Details</h3>
-              </CardHeader>
-              <CardBody className="space-y-4">
+            <div className="mt-6 bg-white rounded-[24px] p-6 border border-gray-200 shadow-sm">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Video Details</h3>
+              <div className="space-y-4">
                 <div>
-                  <h4 className="text-sm font-semibold text-gray-700 mb-1">Script</h4>
-                  <p className="text-gray-900 whitespace-pre-wrap">
+                  <h4 className="text-sm font-bold text-gray-700 mb-2">Script</h4>
+                  <p className="text-gray-900 whitespace-pre-wrap leading-relaxed">
                     {project.type === 'talking_actor'
                       ? project.scriptText
                       : project.gesturePrompt}
@@ -298,102 +300,101 @@ function VideoPageContent() {
 
                 <div className="flex items-center justify-between pt-4 border-t border-gray-200">
                   <div>
-                    <p className="text-sm text-gray-600">Type</p>
-                    <p className="font-semibold text-gray-900">
+                    <p className="text-sm text-gray-600 font-medium">Type</p>
+                    <p className="font-bold text-gray-900">
                       {project.type === 'talking_actor' ? 'Talking Actor' : 'Gesture Only'}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Format</p>
-                    <p className="font-semibold text-gray-900">{project.aspectRatio}</p>
+                    <p className="text-sm text-gray-600 font-medium">Format</p>
+                    <p className="font-bold text-gray-900">{project.aspectRatio}</p>
                   </div>
                   {project.duration && (
                     <div>
-                      <p className="text-sm text-gray-600">Duration</p>
-                      <p className="font-semibold text-gray-900">{project.duration}s</p>
+                      <p className="text-sm text-gray-600 font-medium">Duration</p>
+                      <p className="font-bold text-gray-900">{project.duration}s</p>
                     </div>
                   )}
                 </div>
-              </CardBody>
-            </Card>
+              </div>
+            </div>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Status Card */}
-            <Card className={getStatusColor()}>
-              <CardBody>
-                <div className="flex items-center gap-3 mb-4">
-                  {getStatusIcon()}
-                  <div>
-                    <p className="text-sm text-gray-600">Status</p>
-                    <p className="text-lg font-bold text-gray-900">
-                      {getStatusText()}
-                    </p>
-                  </div>
-                </div>
-
-                {project.status === 'processing' && (
-                  <div className="space-y-2">
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-blue-600 h-2 rounded-full animate-pulse w-2/3" />
-                    </div>
-                    <p className="text-sm text-gray-600">
-                      Estimated time: 1-3 minutes
-                    </p>
-                  </div>
-                )}
-
-                {project.completedAt && (
-                  <p className="text-sm text-gray-600">
-                    Completed {project.completedAt.toLocaleString()}
+            <div className={`rounded-[24px] p-6 border-2 ${
+              project.status === 'completed' ? 'bg-green-50 border-green-200' :
+              project.status === 'processing' ? 'bg-blue-50 border-blue-200' :
+              project.status === 'failed' ? 'bg-red-50 border-red-200' :
+              'bg-gray-50 border-gray-200'
+            }`}>
+              <div className="flex items-center gap-3 mb-4">
+                {getStatusIcon()}
+                <div>
+                  <p className="text-sm text-gray-600 font-medium">Status</p>
+                  <p className="text-xl font-bold text-gray-900">
+                    {getStatusText()}
                   </p>
-                )}
-              </CardBody>
-            </Card>
+                </div>
+              </div>
+
+              {project.status === 'processing' && (
+                <div className="space-y-2">
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="bg-gray-900 h-2 rounded-full animate-pulse w-2/3" />
+                  </div>
+                  <p className="text-sm text-gray-600 font-medium">
+                    Estimated time: 1-3 minutes
+                  </p>
+                </div>
+              )}
+
+              {project.completedAt && (
+                <p className="text-sm text-gray-600 font-medium">
+                  Completed {project.completedAt.toLocaleString()}
+                </p>
+              )}
+            </div>
 
             {/* Project Info */}
-            <Card>
-              <CardHeader>
-                <h3 className="text-lg font-semibold">Project Info</h3>
-              </CardHeader>
-              <CardBody className="space-y-3">
+            <div className="bg-white rounded-[24px] p-6 border border-gray-200 shadow-sm">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Project Info</h3>
+              <div className="space-y-4">
                 <div>
-                  <p className="text-sm text-gray-600">Created</p>
-                  <p className="font-semibold text-gray-900">
+                  <p className="text-sm text-gray-600 font-medium">Created</p>
+                  <p className="font-bold text-gray-900">
                     {project.createdAt.toLocaleDateString()}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Credits Used</p>
-                  <p className="font-semibold text-gray-900">{project.creditsUsed}</p>
+                  <p className="text-sm text-gray-600 font-medium">Credits Used</p>
+                  <p className="font-bold text-gray-900">{project.creditsUsed}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Project ID</p>
-                  <p className="font-mono text-xs text-gray-900">{project.id}</p>
+                  <p className="text-sm text-gray-600 font-medium">Project ID</p>
+                  <p className="font-mono text-xs text-gray-900 break-all">{project.id}</p>
                 </div>
-              </CardBody>
-            </Card>
+              </div>
+            </div>
 
             {/* Actions */}
             {project.status === 'failed' && (
-              <Card className="bg-red-50 border-red-200">
-                <CardBody>
-                  <h4 className="font-semibold text-red-900 mb-2">
-                    What happened?
-                  </h4>
-                  <p className="text-sm text-red-700 mb-4">
-                    {project.errorMessage || 'An unknown error occurred during video generation.'}
-                  </p>
-                  <Button
-                    variant="primary"
-                    className="w-full"
-                    onClick={() => router.push('/create')}
-                  >
-                    Create New Video
-                  </Button>
-                </CardBody>
-              </Card>
+              <div className="bg-red-50 rounded-[24px] p-6 border-2 border-red-200">
+                <h4 className="font-bold text-red-900 mb-3">
+                  What happened?
+                </h4>
+                <p className="text-sm text-red-700 mb-6 leading-relaxed">
+                  {project.errorMessage || 'An unknown error occurred during video generation.'}
+                </p>
+                <Button
+                  variant="primary"
+                  className="w-full"
+                  onClick={() => router.push('/create')}
+                >
+                  Create New Video
+                </Button>
+              </div>
             )}
           </div>
         </div>

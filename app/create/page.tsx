@@ -130,99 +130,113 @@ function CreateProjectContent() {
   // Step 1: Project Type Selection
   const renderTypeStep = () => (
     <div className="max-w-4xl mx-auto">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">
+      <div className="text-center mb-12">
+        <h2 className="text-4xl font-bold text-gray-900 mb-3 tracking-tight">
           Choose Your Video Type
         </h2>
-        <p className="text-gray-600">
+        <p className="text-lg text-gray-600">
           Select the type of video you want to create
         </p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
         {/* Talking Actor */}
-        <Card
-          hover
+        <div
           onClick={() => {
             setProjectType('talking_actor');
             setStep('avatar');
           }}
-          className={`cursor-pointer ${
-            projectType === 'talking_actor' ? 'ring-2 ring-blue-600' : ''
+          className={`bg-white rounded-[32px] border-2 p-8 cursor-pointer transition-all hover:shadow-xl ${
+            projectType === 'talking_actor' ? 'border-gray-900 shadow-lg' : 'border-gray-200 hover:border-gray-300'
           }`}
         >
-          <CardBody className="text-center py-12">
-            <div className="h-20 w-20 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
+          <div className="text-center">
+            <div className="h-20 w-20 rounded-2xl bg-blue-50 flex items-center justify-center mx-auto mb-6">
               <Video className="h-10 w-10 text-blue-600" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">
+            <h3 className="text-2xl font-bold text-gray-900 mb-3">
               Talking Actor
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-600 mb-6">
               Create videos up to 2 minutes with full audio and lip-sync
             </p>
-            <ul className="text-sm text-gray-600 text-left space-y-2">
-              <li className="flex items-center">
-                <Check className="h-4 w-4 text-green-600 mr-2" />
+            <ul className="text-sm text-gray-600 text-left space-y-3">
+              <li className="flex items-center gap-3">
+                <div className="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Check className="h-3 w-3 text-green-600" />
+                </div>
                 Full voice narration
               </li>
-              <li className="flex items-center">
-                <Check className="h-4 w-4 text-green-600 mr-2" />
+              <li className="flex items-center gap-3">
+                <div className="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Check className="h-3 w-3 text-green-600" />
+                </div>
                 Realistic lip-sync
               </li>
-              <li className="flex items-center">
-                <Check className="h-4 w-4 text-green-600 mr-2" />
+              <li className="flex items-center gap-3">
+                <div className="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Check className="h-3 w-3 text-green-600" />
+                </div>
                 Up to 120 seconds
               </li>
-              <li className="flex items-center">
-                <Check className="h-4 w-4 text-green-600 mr-2" />
+              <li className="flex items-center gap-3">
+                <div className="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Check className="h-3 w-3 text-green-600" />
+                </div>
                 35+ languages
               </li>
             </ul>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
 
         {/* Gesture Only */}
-        <Card
-          hover
+        <div
           onClick={() => {
             setProjectType('gesture_only');
             setStep('avatar');
           }}
-          className={`cursor-pointer ${
-            projectType === 'gesture_only' ? 'ring-2 ring-blue-600' : ''
+          className={`bg-white rounded-[32px] border-2 p-8 cursor-pointer transition-all hover:shadow-xl ${
+            projectType === 'gesture_only' ? 'border-gray-900 shadow-lg' : 'border-gray-200 hover:border-gray-300'
           }`}
         >
-          <CardBody className="text-center py-12">
-            <div className="h-20 w-20 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-4">
+          <div className="text-center">
+            <div className="h-20 w-20 rounded-2xl bg-purple-50 flex items-center justify-center mx-auto mb-6">
               <Hand className="h-10 w-10 text-purple-600" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">
+            <h3 className="text-2xl font-bold text-gray-900 mb-3">
               Gesture Only
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-600 mb-6">
               Create 5-second clips with custom body language
             </p>
-            <ul className="text-sm text-gray-600 text-left space-y-2">
-              <li className="flex items-center">
-                <Check className="h-4 w-4 text-green-600 mr-2" />
+            <ul className="text-sm text-gray-600 text-left space-y-3">
+              <li className="flex items-center gap-3">
+                <div className="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Check className="h-3 w-3 text-green-600" />
+                </div>
                 Custom gestures
               </li>
-              <li className="flex items-center">
-                <Check className="h-4 w-4 text-green-600 mr-2" />
+              <li className="flex items-center gap-3">
+                <div className="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Check className="h-3 w-3 text-green-600" />
+                </div>
                 No audio needed
               </li>
-              <li className="flex items-center">
-                <Check className="h-4 w-4 text-green-600 mr-2" />
+              <li className="flex items-center gap-3">
+                <div className="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Check className="h-3 w-3 text-green-600" />
+                </div>
                 5 seconds length
               </li>
-              <li className="flex items-center">
-                <Check className="h-4 w-4 text-green-600 mr-2" />
+              <li className="flex items-center gap-3">
+                <div className="w-5 h-5 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Check className="h-3 w-3 text-green-600" />
+                </div>
                 Perfect for reactions
               </li>
             </ul>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -230,25 +244,25 @@ function CreateProjectContent() {
   // Step 2: Avatar Selection
   const renderAvatarStep = () => (
     <div className="max-w-6xl mx-auto">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Select Your Avatar</h2>
-        <p className="text-gray-600">
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold text-gray-900 mb-2 tracking-tight">Select Your Avatar</h2>
+        <p className="text-lg text-gray-600">
           Choose from 300+ professional AI actors
         </p>
       </div>
 
       {selectedAvatar && (
-        <Card className="mb-6 bg-blue-50 border-blue-200">
-          <CardBody className="flex items-center justify-between">
+        <div className="mb-6 bg-white rounded-[24px] p-6 border border-gray-200 shadow-sm">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <img
                 src={selectedAvatar.previewUrl}
                 alt={selectedAvatar.name}
-                className="h-16 w-16 rounded-lg object-cover"
+                className="h-16 w-16 rounded-2xl object-cover"
               />
               <div>
                 <p className="text-sm text-gray-600">Selected Avatar</p>
-                <p className="text-lg font-semibold text-gray-900">
+                <p className="text-lg font-bold text-gray-900">
                   {selectedAvatar.name}
                 </p>
               </div>
@@ -256,8 +270,8 @@ function CreateProjectContent() {
             <Button variant="outline" onClick={() => setShowAvatarModal(true)}>
               Change Avatar
             </Button>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
       )}
 
       {!selectedAvatar && (
@@ -323,11 +337,11 @@ function CreateProjectContent() {
   // Step 3: Script/Gesture Input
   const renderScriptStep = () => (
     <div className="max-w-4xl mx-auto">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold text-gray-900 mb-2 tracking-tight">
           {projectType === 'talking_actor' ? 'Write Your Script' : 'Describe the Gesture'}
         </h2>
-        <p className="text-gray-600">
+        <p className="text-lg text-gray-600">
           {projectType === 'talking_actor'
             ? 'Enter the text your avatar will speak'
             : 'Describe what you want your avatar to do'}
@@ -382,50 +396,46 @@ function CreateProjectContent() {
   // Step 4: Voice Customization (Talking Actor only)
   const renderVoiceStep = () => (
     <div className="max-w-4xl mx-auto">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Customize Voice</h2>
-        <p className="text-gray-600">
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold text-gray-900 mb-2 tracking-tight">Customize Voice</h2>
+        <p className="text-lg text-gray-600">
           Choose how your avatar sounds
         </p>
       </div>
 
       <div className="space-y-6">
         {/* Audio Type Selection */}
-        <Card>
-          <CardHeader>
-            <h3 className="text-lg font-semibold">Audio Type</h3>
-          </CardHeader>
-          <CardBody className="space-y-4">
-            <div className="flex gap-4">
-              <button
-                onClick={() => setAudioType('tts')}
-                className={`flex-1 p-4 border-2 rounded-lg ${
-                  audioType === 'tts'
-                    ? 'border-blue-600 bg-blue-50'
-                    : 'border-gray-300'
-                }`}
-              >
-                <h4 className="font-semibold mb-1">Text-to-Speech</h4>
-                <p className="text-sm text-gray-600">
-                  Generate voice from your script
-                </p>
-              </button>
-              <button
-                onClick={() => setAudioType('sts')}
-                className={`flex-1 p-4 border-2 rounded-lg ${
-                  audioType === 'sts'
-                    ? 'border-blue-600 bg-blue-50'
-                    : 'border-gray-300'
-                }`}
-              >
-                <h4 className="font-semibold mb-1">Speech-to-Speech</h4>
-                <p className="text-sm text-gray-600">
-                  Upload your own voice recording
-                </p>
-              </button>
-            </div>
-          </CardBody>
-        </Card>
+        <div className="bg-white rounded-[24px] p-6 border border-gray-200 shadow-sm">
+          <h3 className="text-lg font-bold text-gray-900 mb-4">Audio Type</h3>
+          <div className="flex gap-4">
+            <button
+              onClick={() => setAudioType('tts')}
+              className={`flex-1 p-6 border-2 rounded-2xl transition-all ${
+                audioType === 'tts'
+                  ? 'border-gray-900 bg-gray-50 shadow-lg'
+                  : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
+              }`}
+            >
+              <h4 className="font-bold text-gray-900 mb-1">Text-to-Speech</h4>
+              <p className="text-sm text-gray-600">
+                Generate voice from your script
+              </p>
+            </button>
+            <button
+              onClick={() => setAudioType('sts')}
+              className={`flex-1 p-6 border-2 rounded-2xl transition-all ${
+                audioType === 'sts'
+                  ? 'border-gray-900 bg-gray-50 shadow-lg'
+                  : 'border-gray-200 hover:border-gray-300 hover:shadow-md'
+              }`}
+            >
+              <h4 className="font-bold text-gray-900 mb-1">Speech-to-Speech</h4>
+              <p className="text-sm text-gray-600">
+                Upload your own voice recording
+              </p>
+            </button>
+          </div>
+        </div>
 
         {/* TTS Settings */}
         {audioType === 'tts' && (
@@ -569,17 +579,17 @@ function CreateProjectContent() {
   // Step 5: Review and Generate
   const renderReviewStep = () => (
     <div className="max-w-4xl mx-auto">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Review & Generate</h2>
-        <p className="text-gray-600">
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold text-gray-900 mb-2 tracking-tight">Review & Generate</h2>
+        <p className="text-lg text-gray-600">
           Review your video settings before generating
         </p>
       </div>
 
       {error && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+        <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-2xl flex items-start gap-3">
           <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-red-600">{error}</p>
+          <p className="text-sm text-red-600 font-medium">{error}</p>
         </div>
       )}
 
@@ -658,18 +668,18 @@ function CreateProjectContent() {
         )}
 
         {/* Credits */}
-        <Card className="bg-blue-50 border-blue-200">
-          <CardBody className="flex items-center justify-between">
+        <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-[24px] p-6 border-2 border-green-200">
+          <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Credits Required</p>
-              <p className="text-2xl font-bold text-gray-900">2 Credits</p>
+              <p className="text-sm text-gray-600 font-medium">Credits Required</p>
+              <p className="text-3xl font-bold text-gray-900">2 Credits</p>
             </div>
             <div className="text-right">
-              <p className="text-sm text-gray-600">Your Balance</p>
-              <p className="text-2xl font-bold text-blue-600">{user?.credits} Credits</p>
+              <p className="text-sm text-gray-600 font-medium">Your Balance</p>
+              <p className="text-3xl font-bold text-green-600">{user?.credits} Credits</p>
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        </div>
       </div>
 
       <div className="mt-6 flex gap-3">
@@ -695,7 +705,7 @@ function CreateProjectContent() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#F3F4F6]">
       {/* Header */}
       <header className="bg-white border-b border-gray-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -708,9 +718,9 @@ function CreateProjectContent() {
               Back to Dashboard
             </Button>
 
-            <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-lg">
-              <Sparkles className="h-5 w-5 text-blue-600" />
-              <span className="text-sm font-semibold text-blue-900">
+            <div className="flex items-center gap-2 px-4 py-2 bg-green-50 rounded-2xl border border-green-200">
+              <Sparkles className="h-4 w-4 text-green-600" />
+              <span className="text-sm font-bold text-gray-900">
                 {user?.credits || 0} Credits
               </span>
             </div>
@@ -720,7 +730,7 @@ function CreateProjectContent() {
 
       {/* Progress Steps */}
       <div className="bg-white border-b border-gray-200">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-center gap-2">
             {['type', 'avatar', 'script', projectType === 'talking_actor' && 'voice', 'review']
               .filter(Boolean)
@@ -729,20 +739,20 @@ function CreateProjectContent() {
                   <div
                     className={`flex items-center gap-2 ${
                       arr.indexOf(step) >= idx
-                        ? 'text-blue-600'
+                        ? 'text-gray-900'
                         : 'text-gray-400'
                     }`}
                   >
                     <div
-                      className={`h-8 w-8 rounded-full flex items-center justify-center ${
+                      className={`h-10 w-10 rounded-full flex items-center justify-center font-bold ${
                         arr.indexOf(step) >= idx
-                          ? 'bg-blue-600 text-white'
+                          ? 'bg-gray-900 text-white'
                           : 'bg-gray-200 text-gray-600'
                       }`}
                     >
                       {idx + 1}
                     </div>
-                    <span className="text-sm font-medium hidden sm:inline">
+                    <span className="text-sm font-bold hidden sm:inline">
                       {s === 'type'
                         ? 'Type'
                         : s === 'avatar'
@@ -756,8 +766,8 @@ function CreateProjectContent() {
                   </div>
                   {idx < arr.length - 1 && (
                     <div
-                      className={`h-0.5 w-8 sm:w-16 ${
-                        arr.indexOf(step) > idx ? 'bg-blue-600' : 'bg-gray-300'
+                      className={`h-1 w-8 sm:w-16 rounded-full ${
+                        arr.indexOf(step) > idx ? 'bg-gray-900' : 'bg-gray-300'
                       }`}
                     />
                   )}

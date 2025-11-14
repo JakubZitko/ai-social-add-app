@@ -11,31 +11,33 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-gray-200 bg-white/80 backdrop-blur-sm">
+    <header className="sticky top-0 z-40 w-full border-b border-gray-200 bg-white/90 backdrop-blur-md">
       <nav className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-8">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <Sparkles className="h-8 w-8 text-blue-600" />
-          <span className="text-2xl font-bold text-gray-900">VideoAI</span>
+        <Link href="/" className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gray-900 rounded-2xl flex items-center justify-center">
+            <div className="w-5 h-5 border-2 border-white rounded-full"></div>
+          </div>
+          <span className="text-2xl font-bold text-gray-900 tracking-tight">VideoAI</span>
         </Link>
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex md:gap-x-8">
           <Link
             href="#features"
-            className="text-sm font-semibold leading-6 text-gray-900 hover:text-blue-600 transition-colors"
+            className="text-sm font-semibold leading-6 text-gray-600 hover:text-gray-900 transition-colors"
           >
             Features
           </Link>
           <Link
             href="#pricing"
-            className="text-sm font-semibold leading-6 text-gray-900 hover:text-blue-600 transition-colors"
+            className="text-sm font-semibold leading-6 text-gray-600 hover:text-gray-900 transition-colors"
           >
             Pricing
           </Link>
           <Link
             href="#examples"
-            className="text-sm font-semibold leading-6 text-gray-900 hover:text-blue-600 transition-colors"
+            className="text-sm font-semibold leading-6 text-gray-600 hover:text-gray-900 transition-colors"
           >
             Examples
           </Link>
@@ -44,15 +46,15 @@ export function Header() {
         {/* Auth Buttons */}
         <div className="hidden md:flex md:items-center md:gap-x-4">
           {loading ? (
-            <div className="h-10 w-32 bg-gray-200 animate-pulse rounded-lg" />
+            <div className="h-10 w-32 bg-gray-200 animate-pulse rounded-2xl" />
           ) : user ? (
             <>
               <Link href="/dashboard">
                 <Button variant="outline">Dashboard</Button>
               </Link>
-              <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-lg">
-                <Sparkles className="h-4 w-4 text-blue-600" />
-                <span className="text-sm font-semibold text-blue-900">
+              <div className="flex items-center gap-2 px-4 py-2 bg-green-50 rounded-2xl border border-green-200">
+                <Sparkles className="h-4 w-4 text-green-600" />
+                <span className="text-sm font-bold text-gray-900">
                   {user.credits} Credits
                 </span>
               </div>
@@ -116,9 +118,9 @@ export function Header() {
                       Dashboard
                     </Button>
                   </Link>
-                  <div className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-50 rounded-lg">
-                    <Sparkles className="h-4 w-4 text-blue-600" />
-                    <span className="text-sm font-semibold text-blue-900">
+                  <div className="flex items-center justify-center gap-2 px-4 py-2 bg-green-50 rounded-2xl border border-green-200">
+                    <Sparkles className="h-4 w-4 text-green-600" />
+                    <span className="text-sm font-bold text-gray-900">
                       {user.credits} Credits
                     </span>
                   </div>
