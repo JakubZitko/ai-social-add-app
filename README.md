@@ -178,7 +178,7 @@ service firebase.storage {
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the application.
+Open [http://localhost:5000](http://localhost:5000) to see the application.
 
 ## Database Schema
 

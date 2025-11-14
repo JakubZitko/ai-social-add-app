@@ -279,7 +279,7 @@ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_51A1B2C3...
 npm run dev
 
 # Open browser
-# http://localhost:3000
+# http://localhost:5000
 
 # Try to sign up with Google
 # If it works, you're good! ✅
