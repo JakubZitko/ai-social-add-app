@@ -127,7 +127,7 @@ function ProductVideoContent() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gray-900 rounded-xl flex items-center justify-center">
               <VideoIcon className="h-6 w-6 text-white" />
             </div>
             <div>
@@ -159,7 +159,7 @@ function ProductVideoContent() {
           <div className="grid grid-cols-2 gap-3">
             {template.features.map((feature, index) => (
               <div key={index} className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-green-600" />
+                <Check className="h-4 w-4 text-gray-600" />
                 <span className="text-sm text-gray-700">{feature}</span>
               </div>
             ))}
@@ -179,7 +179,7 @@ function ProductVideoContent() {
             <select
               value={selectedAvatarId}
               onChange={(e) => setSelectedAvatarId(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             >
               <option value="">Choose an avatar...</option>
               {avatars.map((avatar) => (
@@ -199,7 +199,7 @@ function ProductVideoContent() {
             <select
               value={selectedVoiceId}
               onChange={(e) => setSelectedVoiceId(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             >
               <option value="">Choose a voice...</option>
               {voices.map((voice) => (
@@ -218,7 +218,7 @@ function ProductVideoContent() {
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
               placeholder="e.g., UltraClean Pro"
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             />
           </div>
 
@@ -230,7 +230,7 @@ function ProductVideoContent() {
               onChange={(e) => setProductDescription(e.target.value)}
               placeholder="e.g., The revolutionary cleaning solution for modern homes"
               rows={3}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             />
           </div>
 
@@ -256,7 +256,7 @@ function ProductVideoContent() {
               value={feature3}
               onChange={(e) => setFeature3(e.target.value)}
               placeholder="Feature 3: e.g., Long-lasting results"
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             />
           </div>
 
@@ -268,7 +268,7 @@ function ProductVideoContent() {
               onChange={(e) => setExplanation(e.target.value)}
               placeholder="e.g., Simply spray, wipe, and enjoy a spotless surface"
               rows={2}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             />
           </div>
 
@@ -280,7 +280,7 @@ function ProductVideoContent() {
               onChange={(e) => setBenefits(e.target.value)}
               placeholder="e.g., Save time and effort with our advanced cleaning technology"
               rows={2}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             />
           </div>
 
@@ -292,7 +292,7 @@ function ProductVideoContent() {
               value={website}
               onChange={(e) => setWebsite(e.target.value)}
               placeholder="e.g., ultraclean.com"
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             />
           </div>
 
@@ -326,8 +326,8 @@ function ProductVideoContent() {
 
           {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
-              {error}
+            <div className="mb-6 p-4 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 text-sm font-semibold">
+              ⚠️ {error}
             </div>
           )}
 
@@ -335,7 +335,7 @@ function ProductVideoContent() {
           <button
             onClick={handleGenerate}
             disabled={generating || !selectedAvatarId || !selectedVoiceId || !finalScript}
-            className="w-full flex items-center justify-center gap-2 bg-purple-600 text-white px-6 py-4 rounded-xl font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2 bg-gray-900 text-white px-6 py-4 rounded-xl font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {generating ? (
               <>

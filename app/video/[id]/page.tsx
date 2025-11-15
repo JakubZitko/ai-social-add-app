@@ -133,11 +133,11 @@ function VideoPageContent() {
   const getStatusIcon = () => {
     switch (project?.status) {
       case 'completed':
-        return <CheckCircle className="h-6 w-6 text-green-600" />;
+        return <CheckCircle className="h-6 w-6 text-gray-600" />;
       case 'processing':
-        return <div className="animate-spin h-6 w-6 border-2 border-blue-600 border-t-transparent rounded-full" />;
+        return <div className="animate-spin h-6 w-6 border-2 border-gray-700 border-t-transparent rounded-full" />;
       case 'failed':
-        return <XCircle className="h-6 w-6 text-red-600" />;
+        return <XCircle className="h-6 w-6 text-gray-600" />;
       default:
         return <div className="h-6 w-6 border-2 border-gray-400 border-t-transparent rounded-full" />;
     }
@@ -169,8 +169,8 @@ function VideoPageContent() {
       <div className="h-full flex items-center justify-center p-4">
         <div className="max-w-md bg-white rounded-[32px] p-12 border border-gray-200 shadow-lg">
           <div className="text-center">
-            <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <AlertCircle className="h-8 w-8 text-red-600" />
+            <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <AlertCircle className="h-8 w-8 text-gray-600" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
               {error || 'Video not found'}
@@ -249,8 +249,8 @@ function VideoPageContent() {
                       </div>
                     ) : project.status === 'failed' ? (
                       <div className="text-center">
-                        <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <XCircle className="h-10 w-10 text-red-600" />
+                        <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <XCircle className="h-10 w-10 text-gray-600" />
                         </div>
                         <p className="text-white text-xl font-bold">
                           Video generation failed
@@ -312,9 +312,9 @@ function VideoPageContent() {
             <div className="space-y-6">
               {/* Status Card */}
               <div className={`rounded-[24px] p-6 border-2 ${
-                project.status === 'completed' ? 'bg-green-50 border-green-200' :
-                project.status === 'processing' ? 'bg-blue-50 border-blue-200' :
-                project.status === 'failed' ? 'bg-red-50 border-red-200' :
+                project.status === 'completed' ? 'bg-gray-50 border-gray-200' :
+                project.status === 'processing' ? 'bg-gray-50 border-gray-200' :
+                project.status === 'failed' ? 'bg-gray-50 border-gray-200' :
                 'bg-gray-50 border-gray-200'
               }`}>
                 <div className="flex items-center gap-3 mb-4">
@@ -368,11 +368,11 @@ function VideoPageContent() {
 
               {/* Actions */}
               {project.status === 'failed' && (
-                <div className="bg-red-50 rounded-[24px] p-6 border-2 border-red-200">
-                  <h4 className="font-bold text-red-900 mb-3">
+                <div className="bg-gray-50 rounded-[24px] p-6 border-2 border-gray-200">
+                  <h4 className="font-bold text-gray-900 mb-3">
                     What happened?
                   </h4>
-                  <p className="text-sm text-red-700 mb-6 leading-relaxed">
+                  <p className="text-sm text-gray-700 mb-6 leading-relaxed">
                     {project.errorMessage || 'An unknown error occurred during video generation.'}
                   </p>
                   <button

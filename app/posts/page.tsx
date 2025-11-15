@@ -79,9 +79,9 @@ function ScheduledPostsContent() {
       case 'tiktok':
         return 'bg-gray-900 text-white';
       case 'instagram':
-        return 'bg-gradient-to-br from-purple-600 to-pink-600 text-white';
+        return 'bg-gradient-to-br from-gray-700 to-gray-700 text-white';
       case 'youtube':
-        return 'bg-red-600 text-white';
+        return 'bg-gray-700 text-white';
       default:
         return 'bg-gray-600 text-white';
     }
@@ -183,7 +183,7 @@ function ScheduledPostsContent() {
               onClick={() => setFilterPlatform('instagram')}
               className={`w-full text-left px-3 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${
                 filterPlatform === 'instagram'
-                  ? 'bg-gradient-to-br from-purple-600 to-pink-600 text-white shadow-lg'
+                  ? 'bg-gradient-to-br from-gray-700 to-gray-700 text-white shadow-lg'
                   : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
               }`}
             >
@@ -194,7 +194,7 @@ function ScheduledPostsContent() {
               onClick={() => setFilterPlatform('youtube')}
               className={`w-full text-left px-3 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${
                 filterPlatform === 'youtube'
-                  ? 'bg-red-600 text-white shadow-lg'
+                  ? 'bg-gray-700 text-white shadow-lg'
                   : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
               }`}
             >
@@ -205,7 +205,7 @@ function ScheduledPostsContent() {
         </div>
 
         {/* Quick Stats */}
-        <div className="mb-6 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-4 border border-blue-200">
+        <div className="mb-6 bg-gradient-to-br from-gray-50 to-gray-50 rounded-2xl p-4 border border-gray-200">
           <h4 className="text-xs font-semibold text-gray-900 mb-3">This Week</h4>
           <div className="space-y-2">
             <div className="flex justify-between items-center">
@@ -214,11 +214,11 @@ function ScheduledPostsContent() {
             </div>
             <div className="flex justify-between items-center">
               <span className="text-xs text-gray-600">Posted</span>
-              <span className="text-sm font-bold text-green-600">0</span>
+              <span className="text-sm font-bold text-gray-600">0</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-xs text-gray-600">Failed</span>
-              <span className="text-sm font-bold text-red-600">0</span>
+              <span className="text-sm font-bold text-gray-600">0</span>
             </div>
           </div>
         </div>
@@ -392,11 +392,11 @@ function ScheduledPostsContent() {
                                     </p>
                                   </div>
                                   <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
-                                    <button className="w-6 h-6 rounded-md bg-white hover:bg-blue-50 flex items-center justify-center shadow-sm border border-gray-200">
-                                      <Edit className="h-3 w-3 text-blue-600" />
+                                    <button className="w-6 h-6 rounded-md bg-white hover:bg-gray-50 flex items-center justify-center shadow-sm border border-gray-200">
+                                      <Edit className="h-3 w-3 text-gray-600" />
                                     </button>
-                                    <button className="w-6 h-6 rounded-md bg-white hover:bg-red-50 flex items-center justify-center shadow-sm border border-gray-200">
-                                      <Trash2 className="h-3 w-3 text-red-600" />
+                                    <button className="w-6 h-6 rounded-md bg-white hover:bg-gray-50 flex items-center justify-center shadow-sm border border-gray-200">
+                                      <Trash2 className="h-3 w-3 text-gray-600" />
                                     </button>
                                   </div>
                                 </div>

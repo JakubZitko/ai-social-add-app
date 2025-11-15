@@ -82,19 +82,19 @@ function SocialConnectionsContent() {
         return {
           name: 'Instagram',
           icon: <Instagram className="h-6 w-6" />,
-          color: 'from-purple-600 to-pink-600',
-          bgColor: 'bg-gradient-to-br from-purple-600 to-pink-600',
-          lightBg: 'from-purple-50 to-pink-50',
-          borderColor: 'border-purple-200',
+          color: 'from-gray-700 to-gray-700',
+          bgColor: 'bg-gradient-to-br from-gray-700 to-gray-700',
+          lightBg: 'from-gray-50 to-gray-50',
+          borderColor: 'border-gray-200',
         };
       case 'youtube':
         return {
           name: 'YouTube',
           icon: <Youtube className="h-6 w-6" />,
-          color: 'from-red-600 to-red-500',
-          bgColor: 'bg-red-600',
-          lightBg: 'from-red-50 to-orange-50',
-          borderColor: 'border-red-200',
+          color: 'from-gray-700 to-gray-600',
+          bgColor: 'bg-gray-700',
+          lightBg: 'from-gray-50 to-gray-50',
+          borderColor: 'border-gray-200',
         };
       default:
         return {
@@ -172,7 +172,7 @@ function SocialConnectionsContent() {
             <h1 className="text-xl font-bold text-gray-900">Social Media Connections</h1>
             <p className="text-sm text-gray-500">Connect your accounts to auto-post videos</p>
           </div>
-          <div className="px-4 py-2 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl border border-blue-200">
+          <div className="px-4 py-2 bg-gradient-to-br from-gray-50 to-gray-50 rounded-xl border border-gray-200">
             <span className="text-xs font-bold text-gray-600">
               {connectedCount} of {connections.length} connected
             </span>
@@ -182,9 +182,9 @@ function SocialConnectionsContent() {
         {/* Main Content */}
         <div className="p-8 max-w-5xl mx-auto">
           {/* Info Banner */}
-          <div className="mb-8 p-6 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-[24px] border border-blue-200">
+          <div className="mb-8 p-6 bg-gradient-to-br from-gray-50 to-gray-50 rounded-[24px] border border-gray-200">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+              <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center flex-shrink-0">
                 <Lock className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -223,8 +223,8 @@ function SocialConnectionsContent() {
                         {connection.connected ? (
                           <div className="space-y-3">
                             <div className="flex items-center gap-2">
-                              <Check className="h-5 w-5 text-green-600" />
-                              <span className="text-sm font-semibold text-green-700">
+                              <Check className="h-5 w-5 text-gray-600" />
+                              <span className="text-sm font-semibold text-gray-700">
                                 Connected
                               </span>
                             </div>
@@ -299,7 +299,7 @@ function SocialConnectionsContent() {
                           </button>
                           <button
                             onClick={() => handleDisconnect(connection.platform)}
-                            className="px-4 py-2 bg-white hover:bg-red-50 rounded-xl text-sm font-semibold text-red-600 transition-all border border-red-200 flex items-center gap-2"
+                            className="px-4 py-2 bg-white hover:bg-gray-50 rounded-xl text-sm font-semibold text-gray-600 transition-all border border-gray-200 flex items-center gap-2"
                           >
                             <Trash2 className="h-4 w-4" />
                             Disconnect
@@ -335,33 +335,33 @@ function SocialConnectionsContent() {
             <h3 className="text-lg font-bold text-gray-900 mb-4">Need Help?</h3>
             <div className="space-y-3 text-sm text-gray-700">
               <div className="flex items-start gap-3">
-                <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                <AlertCircle className="h-5 w-5 text-gray-600 flex-shrink-0 mt-0.5" />
                 <div>
                   <strong>TikTok:</strong> You'll need a TikTok Business account to use the API.
                   Learn more in our{' '}
-                  <a href="/docs/tiktok" className="text-blue-600 hover:underline">
+                  <a href="/docs/tiktok" className="text-gray-600 hover:underline">
                     TikTok integration guide
                   </a>
                   .
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <AlertCircle className="h-5 w-5 text-purple-600 flex-shrink-0 mt-0.5" />
+                <AlertCircle className="h-5 w-5 text-gray-600 flex-shrink-0 mt-0.5" />
                 <div>
                   <strong>Instagram:</strong> Requires a Facebook Business Page linked to your
                   Instagram account.{' '}
-                  <a href="/docs/instagram" className="text-purple-600 hover:underline">
+                  <a href="/docs/instagram" className="text-gray-600 hover:underline">
                     Setup instructions
                   </a>
                   .
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                <AlertCircle className="h-5 w-5 text-gray-600 flex-shrink-0 mt-0.5" />
                 <div>
                   <strong>YouTube:</strong> Works with any YouTube channel. Make sure you have
                   upload permissions.{' '}
-                  <a href="/docs/youtube" className="text-red-600 hover:underline">
+                  <a href="/docs/youtube" className="text-gray-600 hover:underline">
                     Learn more
                   </a>
                   .

@@ -127,7 +127,7 @@ function FacebookAdContent() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gray-900 rounded-xl flex items-center justify-center">
               <ShoppingCart className="h-6 w-6 text-white" />
             </div>
             <div>
@@ -159,7 +159,7 @@ function FacebookAdContent() {
           <div className="grid grid-cols-2 gap-3">
             {template.features.map((feature, index) => (
               <div key={index} className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-green-600" />
+                <Check className="h-4 w-4 text-gray-600" />
                 <span className="text-sm text-gray-700">{feature}</span>
               </div>
             ))}
@@ -179,7 +179,7 @@ function FacebookAdContent() {
             <select
               value={selectedAvatarId}
               onChange={(e) => setSelectedAvatarId(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             >
               <option value="">Choose an avatar...</option>
               {avatars.map((avatar) => (
@@ -199,7 +199,7 @@ function FacebookAdContent() {
             <select
               value={selectedVoiceId}
               onChange={(e) => setSelectedVoiceId(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             >
               <option value="">Choose a voice...</option>
               {voices.map((voice) => (
@@ -216,7 +216,7 @@ function FacebookAdContent() {
             <select
               value={selectedHook}
               onChange={(e) => setSelectedHook(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             >
               {template.hooks.map((hook, index) => (
                 <option key={index} value={hook}>
@@ -236,7 +236,7 @@ function FacebookAdContent() {
               value={problem}
               onChange={(e) => setProblem(e.target.value)}
               placeholder="e.g., wasting time on manual tasks"
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             />
           </div>
 
@@ -248,7 +248,7 @@ function FacebookAdContent() {
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
               placeholder="e.g., TaskMaster Pro"
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             />
           </div>
 
@@ -260,7 +260,7 @@ function FacebookAdContent() {
               value={benefit}
               onChange={(e) => setBenefit(e.target.value)}
               placeholder="e.g., ultimate productivity solution"
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             />
           </div>
 
@@ -286,7 +286,7 @@ function FacebookAdContent() {
               value={feature3}
               onChange={(e) => setFeature3(e.target.value)}
               placeholder="Feature 3: e.g., Money-back guarantee"
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             />
           </div>
 
@@ -296,7 +296,7 @@ function FacebookAdContent() {
             <select
               value={selectedCta}
               onChange={(e) => setSelectedCta(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             >
               {template.ctas?.map((cta, index) => (
                 <option key={index} value={cta}>
@@ -336,8 +336,8 @@ function FacebookAdContent() {
 
           {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
-              {error}
+            <div className="mb-6 p-4 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 text-sm font-semibold">
+              ⚠️ {error}
             </div>
           )}
 
@@ -345,7 +345,7 @@ function FacebookAdContent() {
           <button
             onClick={handleGenerate}
             disabled={generating || !selectedAvatarId || !selectedVoiceId || !finalScript}
-            className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-4 rounded-xl font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2 bg-gray-900 text-white px-6 py-4 rounded-xl font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {generating ? (
               <>

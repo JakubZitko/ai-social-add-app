@@ -124,7 +124,7 @@ ${selectedCta}`;
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-gray-900 rounded-xl flex items-center justify-center">
               <Heart className="h-6 w-6 text-white" />
             </div>
             <div>
@@ -156,7 +156,7 @@ ${selectedCta}`;
           <div className="grid grid-cols-2 gap-3">
             {template.features.map((feature, index) => (
               <div key={index} className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-green-600" />
+                <Check className="h-4 w-4 text-gray-600" />
                 <span className="text-sm text-gray-700">{feature}</span>
               </div>
             ))}
@@ -176,7 +176,7 @@ ${selectedCta}`;
             <select
               value={selectedAvatarId}
               onChange={(e) => setSelectedAvatarId(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             >
               <option value="">Choose an avatar...</option>
               {avatars.map((avatar) => (
@@ -196,7 +196,7 @@ ${selectedCta}`;
             <select
               value={selectedVoiceId}
               onChange={(e) => setSelectedVoiceId(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             >
               <option value="">Choose a voice...</option>
               {voices.map((voice) => (
@@ -213,7 +213,7 @@ ${selectedCta}`;
             <select
               value={selectedHook}
               onChange={(e) => setSelectedHook(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             >
               {template.hooks.map((hook, index) => (
                 <option key={index} value={hook}>
@@ -231,7 +231,7 @@ ${selectedCta}`;
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
               placeholder="e.g., SkinGlow Serum"
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             />
           </div>
 
@@ -245,7 +245,7 @@ ${selectedCta}`;
               onChange={(e) => setExperience(e.target.value)}
               placeholder="e.g., it felt so lightweight and absorbed instantly"
               rows={2}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             />
           </div>
 
@@ -259,7 +259,7 @@ ${selectedCta}`;
               onChange={(e) => setResults(e.target.value)}
               placeholder="e.g., My skin feels smoother and more hydrated. I've gotten so many compliments!"
               rows={3}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             />
           </div>
 
@@ -269,7 +269,7 @@ ${selectedCta}`;
             <select
               value={selectedCta}
               onChange={(e) => setSelectedCta(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
             >
               {template.ctas?.map((cta, index) => (
                 <option key={index} value={cta}>
@@ -308,9 +308,9 @@ ${selectedCta}`;
           </div>
 
           {/* Pro Tip */}
-          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-            <div className="font-semibold text-blue-900 mb-2">💡 UGC Pro Tip</div>
-            <p className="text-sm text-blue-800">
+          <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-xl">
+            <div className="font-semibold text-gray-900 mb-2">💡 UGC Pro Tip</div>
+            <p className="text-sm text-gray-700">
               Keep it authentic! UGC videos perform best when they feel real and relatable. Use casual
               language, personal stories, and genuine emotion.
             </p>
@@ -318,8 +318,8 @@ ${selectedCta}`;
 
           {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
-              {error}
+            <div className="mb-6 p-4 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 text-sm font-semibold">
+              ⚠️ {error}
             </div>
           )}
 
@@ -327,7 +327,7 @@ ${selectedCta}`;
           <button
             onClick={handleGenerate}
             disabled={generating || !selectedAvatarId || !selectedVoiceId || !finalScript}
-            className="w-full flex items-center justify-center gap-2 bg-red-600 text-white px-6 py-4 rounded-xl font-semibold hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2 bg-gray-900 text-white px-6 py-4 rounded-xl font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {generating ? (
               <>

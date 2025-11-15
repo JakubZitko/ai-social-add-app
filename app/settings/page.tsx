@@ -153,9 +153,9 @@ function SettingsContent() {
 
             {/* Social Connections Link */}
             <Link href="/settings/social">
-              <div className="mt-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-[24px] p-4 border-2 border-purple-200 cursor-pointer hover:shadow-lg transition-all">
+              <div className="mt-4 bg-gradient-to-br from-gray-50 to-gray-50 rounded-[24px] p-4 border-2 border-gray-200 cursor-pointer hover:shadow-lg transition-all">
                 <div className="flex items-center gap-2 mb-2">
-                  <LinkIcon className="h-5 w-5 text-purple-600" />
+                  <LinkIcon className="h-5 w-5 text-gray-600" />
                   <span className="font-bold text-gray-900 text-sm">Social Connections</span>
                 </div>
                 <p className="text-xs text-gray-600">Manage TikTok, Instagram & YouTube</p>
@@ -167,9 +167,9 @@ function SettingsContent() {
           <div className="flex-1">
             {/* Save Success Banner */}
             {saved && (
-              <div className="mb-6 bg-green-50 rounded-[20px] p-4 border-2 border-green-200 flex items-center gap-3">
-                <Check className="h-5 w-5 text-green-600" />
-                <span className="text-sm font-semibold text-green-800">Settings saved successfully!</span>
+              <div className="mb-6 bg-gray-50 rounded-[20px] p-4 border-2 border-gray-200 flex items-center gap-3">
+                <Check className="h-5 w-5 text-gray-600" />
+                <span className="text-sm font-semibold text-gray-800">Settings saved successfully!</span>
               </div>
             )}
 
@@ -183,7 +183,7 @@ function SettingsContent() {
                   <div className="mb-6">
                     <label className="block text-sm font-semibold text-gray-700 mb-3">Profile Photo</label>
                     <div className="flex items-center gap-4">
-                      <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full overflow-hidden border-4 border-white shadow-lg">
+                      <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-blue-100 rounded-full overflow-hidden border-4 border-white shadow-lg">
                         {user?.photoURL ? (
                           <img src={user.photoURL} alt="Profile" className="w-full h-full object-cover" />
                         ) : (
@@ -332,12 +332,12 @@ function SettingsContent() {
                 </div>
 
                 {/* Delete Account */}
-                <div className="bg-red-50 rounded-[24px] p-8 border-2 border-red-200">
-                  <h3 className="text-xl font-bold text-red-900 mb-4">Delete Account</h3>
-                  <p className="text-red-700 mb-4">
+                <div className="bg-gray-50 rounded-[24px] p-8 border-2 border-gray-200">
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">Delete Account</h3>
+                  <p className="text-gray-700 mb-4">
                     Permanently delete your account and all associated data. This action cannot be undone.
                   </p>
-                  <button className="flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors">
+                  <button className="flex items-center gap-2 px-6 py-3 bg-gray-700 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors">
                     <Trash2 className="h-5 w-5" />
                     Delete Account
                   </button>
@@ -477,7 +477,7 @@ function SettingsContent() {
                         className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200"
                       >
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full overflow-hidden border-2 border-white shadow">
+                          <div className="w-12 h-12 bg-gradient-to-br from-gray-100 to-blue-100 rounded-full overflow-hidden border-2 border-white shadow">
                             {member.avatar ? (
                               <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
                             ) : (
@@ -490,7 +490,7 @@ function SettingsContent() {
                             <div className="flex items-center gap-2 mb-1">
                               <span className="text-sm font-bold text-gray-900">{member.name}</span>
                               {member.status === 'pending' && (
-                                <span className="px-2 py-0.5 bg-yellow-50 text-yellow-700 border border-yellow-200 rounded-lg text-xs font-semibold">
+                                <span className="px-2 py-0.5 bg-gray-50 text-gray-700 border border-gray-200 rounded-lg text-xs font-semibold">
                                   Pending
                                 </span>
                               )}
@@ -511,9 +511,9 @@ function SettingsContent() {
                           {member.role !== 'owner' && (
                             <button
                               onClick={() => handleRemoveMember(member.id)}
-                              className="p-2 hover:bg-red-50 rounded-lg transition-colors"
+                              className="p-2 hover:bg-gray-50 rounded-lg transition-colors"
                             >
-                              <Trash2 className="h-4 w-4 text-red-600" />
+                              <Trash2 className="h-4 w-4 text-gray-600" />
                             </button>
                           )}
                         </div>
@@ -523,9 +523,9 @@ function SettingsContent() {
                 </div>
 
                 {/* Team Roles Info */}
-                <div className="bg-blue-50 rounded-[24px] p-6 border-2 border-blue-200">
-                  <h3 className="text-lg font-bold text-blue-900 mb-3">Team Roles</h3>
-                  <div className="space-y-2 text-sm text-blue-800">
+                <div className="bg-gray-50 rounded-[24px] p-6 border-2 border-gray-200">
+                  <h3 className="text-lg font-bold text-gray-900 mb-3">Team Roles</h3>
+                  <div className="space-y-2 text-sm text-gray-800">
                     <div><strong>Owner:</strong> Full access to all features and settings</div>
                     <div><strong>Admin:</strong> Can manage projects and invite members</div>
                     <div><strong>Member:</strong> Can create and edit projects</div>
@@ -541,17 +541,17 @@ function SettingsContent() {
                   <h2 className="text-2xl font-bold text-gray-900 mb-6">Security Settings</h2>
 
                   {/* Two-Factor Authentication */}
-                  <div className="mb-6 p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border-2 border-green-200">
+                  <div className="mb-6 p-6 bg-gradient-to-br from-gray-50 to-gray-50 rounded-xl border-2 border-gray-200">
                     <div className="flex items-start justify-between">
                       <div>
                         <div className="flex items-center gap-2 mb-2">
-                          <Shield className="h-6 w-6 text-green-600" />
+                          <Shield className="h-6 w-6 text-gray-600" />
                           <span className="text-lg font-bold text-gray-900">Two-Factor Authentication</span>
                         </div>
                         <p className="text-sm text-gray-700 mb-4">
                           Add an extra layer of security to your account
                         </p>
-                        <span className="inline-flex items-center px-3 py-1.5 bg-green-100 text-green-800 border border-green-300 rounded-lg text-xs font-semibold">
+                        <span className="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-800 border border-green-300 rounded-lg text-xs font-semibold">
                           <Check className="h-3 w-3 mr-1" />
                           Enabled
                         </span>
@@ -572,7 +572,7 @@ function SettingsContent() {
                             <div className="text-sm font-semibold text-gray-900 mb-1">Current Session</div>
                             <div className="text-xs text-gray-600">Chrome on macOS • San Francisco, CA</div>
                           </div>
-                          <span className="px-3 py-1 bg-green-50 text-green-700 border border-green-200 rounded-lg text-xs font-semibold">
+                          <span className="px-3 py-1 bg-gray-50 text-gray-700 border border-gray-200 rounded-lg text-xs font-semibold">
                             Active Now
                           </span>
                         </div>
@@ -588,10 +588,10 @@ function SettingsContent() {
                         Generate New Key
                       </button>
                     </div>
-                    <div className="bg-yellow-50 rounded-xl p-4 border border-yellow-200">
+                    <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
                       <div className="flex items-start gap-2">
-                        <AlertCircle className="h-5 w-5 text-yellow-600 shrink-0 mt-0.5" />
-                        <div className="text-sm text-yellow-800">
+                        <AlertCircle className="h-5 w-5 text-gray-600 shrink-0 mt-0.5" />
+                        <div className="text-sm text-gray-800">
                           <strong>No API keys yet.</strong> Generate an API key to integrate VideoAI with your applications.
                         </div>
                       </div>

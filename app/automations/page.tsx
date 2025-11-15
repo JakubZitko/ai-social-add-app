@@ -79,9 +79,9 @@ function AutomationsContent() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active':
-        return 'bg-green-100 text-green-700 border-green-200';
+        return 'bg-gray-100 text-gray-700 border-gray-200';
       case 'paused':
-        return 'bg-orange-100 text-orange-700 border-orange-200';
+        return 'bg-gray-100 text-gray-700 border-gray-200';
       case 'draft':
         return 'bg-gray-100 text-gray-700 border-gray-200';
       default:
@@ -149,9 +149,9 @@ function AutomationsContent() {
         <div className="p-8">
           {/* Stats Cards */}
           <div className="grid md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-[24px] p-6 border border-green-200">
+            <div className="bg-gradient-to-br from-gray-50 to-gray-50 rounded-[24px] p-6 border border-gray-200">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center">
                   <Zap className="h-6 w-6 text-white" />
                 </div>
                 <div>
@@ -166,9 +166,9 @@ function AutomationsContent() {
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-[24px] p-6 border border-blue-200">
+            <div className="bg-gradient-to-br from-gray-50 to-gray-50 rounded-[24px] p-6 border border-gray-200">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center">
                   <TrendingUp className="h-6 w-6 text-white" />
                 </div>
                 <div>
@@ -179,9 +179,9 @@ function AutomationsContent() {
               <div className="text-sm text-gray-600">Across all automations</div>
             </div>
 
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-[24px] p-6 border border-purple-200">
+            <div className="bg-gradient-to-br from-gray-50 to-gray-50 rounded-[24px] p-6 border border-gray-200">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center">
                   <BarChart3 className="h-6 w-6 text-white" />
                 </div>
                 <div>
@@ -290,7 +290,7 @@ function AutomationsContent() {
                     <div className="flex items-center gap-1">
                       <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-green-500 rounded-full"
+                          className="h-full bg-gray-500 rounded-full"
                           style={{ width: `${automation.successRate}%` }}
                         ></div>
                       </div>
@@ -306,9 +306,9 @@ function AutomationsContent() {
                         title={automation.status === 'active' ? 'Pause' : 'Activate'}
                       >
                         {automation.status === 'active' ? (
-                          <Pause className="h-4 w-4 text-orange-600" />
+                          <Pause className="h-4 w-4 text-gray-600" />
                         ) : (
-                          <Play className="h-4 w-4 text-green-600" />
+                          <Play className="h-4 w-4 text-gray-600" />
                         )}
                       </button>
                       <button
@@ -316,14 +316,14 @@ function AutomationsContent() {
                         className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                         title="Edit"
                       >
-                        <Edit className="h-4 w-4 text-blue-600" />
+                        <Edit className="h-4 w-4 text-gray-600" />
                       </button>
                       <button
                         onClick={() => deleteAutomation(automation.id)}
-                        className="p-2 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-2 hover:bg-gray-50 rounded-lg transition-colors"
                         title="Delete"
                       >
-                        <Trash2 className="h-4 w-4 text-red-600" />
+                        <Trash2 className="h-4 w-4 text-gray-600" />
                       </button>
                     </div>
                   </div>
@@ -337,8 +337,8 @@ function AutomationsContent() {
           {/* Old Empty State - REMOVED (now handled in loading/empty check above) */}
           {false && (
             <div className="bg-white rounded-[32px] p-12 border border-gray-200 text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Zap className="h-10 w-10 text-purple-600" />
+              <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Zap className="h-10 w-10 text-gray-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">No automations yet</h3>
               <p className="text-gray-600 mb-6 max-w-md mx-auto">

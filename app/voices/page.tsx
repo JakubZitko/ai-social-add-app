@@ -117,17 +117,17 @@ function VoicesContent() {
   const getCategoryColor = (category: string) => {
     switch (category) {
       case 'professional':
-        return 'bg-blue-50 text-blue-700 border-blue-200';
+        return 'bg-gray-50 text-gray-700 border-gray-200';
       case 'casual':
-        return 'bg-green-50 text-green-700 border-green-200';
+        return 'bg-gray-50 text-gray-700 border-gray-200';
       case 'energetic':
-        return 'bg-orange-50 text-orange-700 border-orange-200';
+        return 'bg-gray-50 text-gray-700 border-gray-200';
       case 'calm':
-        return 'bg-purple-50 text-purple-700 border-purple-200';
+        return 'bg-gray-50 text-gray-700 border-gray-200';
       case 'narrative':
-        return 'bg-indigo-50 text-indigo-700 border-indigo-200';
+        return 'bg-gray-50 text-gray-700 border-gray-200';
       case 'custom':
-        return 'bg-pink-50 text-pink-700 border-pink-200';
+        return 'bg-gray-50 text-gray-700 border-gray-200';
       default:
         return 'bg-gray-50 text-gray-700 border-gray-200';
     }
@@ -153,9 +153,9 @@ function VoicesContent() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-4 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-[24px] p-6 border-2 border-blue-200">
+          <div className="bg-gradient-to-br from-gray-50 to-indigo-50 rounded-[24px] p-6 border-2 border-gray-200">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center">
                 <Mic className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -165,9 +165,9 @@ function VoicesContent() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-red-50 to-pink-50 rounded-[24px] p-6 border-2 border-red-200">
+          <div className="bg-gradient-to-br from-gray-50 to-gray-50 rounded-[24px] p-6 border-2 border-gray-200">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center">
                 <Heart className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -177,9 +177,9 @@ function VoicesContent() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-[24px] p-6 border-2 border-yellow-200">
+          <div className="bg-gradient-to-br from-gray-50 to-gray-50 rounded-[24px] p-6 border-2 border-gray-200">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-12 h-12 bg-yellow-600 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center">
                 <Crown className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -189,9 +189,9 @@ function VoicesContent() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-[24px] p-6 border-2 border-purple-200">
+          <div className="bg-gradient-to-br from-gray-50 to-gray-50 rounded-[24px] p-6 border-2 border-gray-200">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center">
                 <Sparkles className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -254,11 +254,11 @@ function VoicesContent() {
               onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
               className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold transition-colors ${
                 showFavoritesOnly
-                  ? 'bg-red-50 text-red-700 border-2 border-red-200'
+                  ? 'bg-gray-50 text-gray-700 border-2 border-gray-200'
                   : 'bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100'
               }`}
             >
-              <Heart className={`h-5 w-5 ${showFavoritesOnly ? 'fill-red-600' : ''}`} />
+              <Heart className={`h-5 w-5 ${showFavoritesOnly ? 'fill-gray-600' : ''}`} />
               Favorites
             </button>
           </div>
@@ -296,7 +296,7 @@ function VoicesContent() {
                     <div className="flex items-center gap-2 mb-2">
                       <h3 className="text-lg font-bold text-gray-900">{voice.name}</h3>
                       {voice.isPremium && (
-                        <div className="flex items-center gap-1 px-2 py-0.5 bg-yellow-50 text-yellow-700 border border-yellow-200 rounded-lg text-xs font-semibold">
+                        <div className="flex items-center gap-1 px-2 py-0.5 bg-gray-50 text-gray-700 border border-gray-200 rounded-lg text-xs font-semibold">
                           <Crown className="h-3 w-3" />
                           Pro
                         </div>
@@ -307,11 +307,11 @@ function VoicesContent() {
                   <button
                     onClick={() => toggleFavorite(voice.id)}
                     className={`p-2 rounded-xl transition-colors ${
-                      voice.isFavorite ? 'bg-red-50' : 'hover:bg-gray-100'
+                      voice.isFavorite ? 'bg-gray-50' : 'hover:bg-gray-100'
                     }`}
                   >
                     <Heart
-                      className={`h-5 w-5 ${voice.isFavorite ? 'text-red-600 fill-red-600' : 'text-gray-400'}`}
+                      className={`h-5 w-5 ${voice.isFavorite ? 'text-gray-600 fill-gray-600' : 'text-gray-400'}`}
                     />
                   </button>
                 </div>
@@ -397,18 +397,18 @@ function VoicesContent() {
                 Upload audio samples to create your own AI voice clone. We recommend at least 10 minutes of clear audio.
               </p>
 
-              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-[24px] p-8 border-2 border-dashed border-purple-300 text-center mb-6">
-                <Upload className="h-12 w-12 text-purple-600 mx-auto mb-4" />
+              <div className="bg-gradient-to-br from-gray-50 to-gray-50 rounded-[24px] p-8 border-2 border-dashed border-purple-300 text-center mb-6">
+                <Upload className="h-12 w-12 text-gray-600 mx-auto mb-4" />
                 <h3 className="text-lg font-bold text-gray-900 mb-2">Drop audio files here</h3>
                 <p className="text-sm text-gray-600 mb-4">or click to browse</p>
-                <button className="px-6 py-3 bg-purple-600 text-white rounded-xl font-semibold hover:bg-purple-700 transition-colors">
+                <button className="px-6 py-3 bg-gray-700 text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors">
                   Select Files
                 </button>
               </div>
 
-              <div className="bg-blue-50 rounded-[20px] p-4 mb-6 border border-blue-200">
-                <h4 className="text-sm font-bold text-blue-900 mb-2">Requirements:</h4>
-                <ul className="text-sm text-blue-800 space-y-1">
+              <div className="bg-gray-50 rounded-[20px] p-4 mb-6 border border-gray-200">
+                <h4 className="text-sm font-bold text-gray-900 mb-2">Requirements:</h4>
+                <ul className="text-sm text-gray-800 space-y-1">
                   <li>• Minimum 10 minutes of audio</li>
                   <li>• Clear, studio-quality recordings</li>
                   <li>• WAV or MP3 format</li>

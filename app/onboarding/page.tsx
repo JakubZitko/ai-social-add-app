@@ -37,7 +37,7 @@ function OnboardingContent() {
       title: 'E-commerce Product Ads',
       description: 'Create high-converting ads for my products',
       icon: <ShoppingCart className="h-8 w-8" />,
-      color: 'from-blue-500 to-indigo-600',
+      color: 'from-gray-500 to-gray-700',
       templates: ['facebook-product-ad', 'tiktok-native-ad', 'ugc-testimonial'],
     },
     {
@@ -45,7 +45,7 @@ function OnboardingContent() {
       title: 'Social Media Content',
       description: 'Daily content for TikTok, Instagram, YouTube',
       icon: <TrendingUp className="h-8 w-8" />,
-      color: 'from-purple-500 to-pink-600',
+      color: 'from-gray-500 to-gray-700',
       templates: ['shorts-viral', 'shorts-educational', 'tiktok-native-ad'],
     },
     {
@@ -53,7 +53,7 @@ function OnboardingContent() {
       title: 'Affiliate Product Reviews',
       description: 'Review products and earn commissions',
       icon: <DollarSign className="h-8 w-8" />,
-      color: 'from-green-500 to-emerald-600',
+      color: 'from-gray-500 to-gray-700',
       templates: ['affiliate-review', 'affiliate-comparison', 'product-showcase'],
     },
     {
@@ -61,7 +61,7 @@ function OnboardingContent() {
       title: 'Educational/Explainer Videos',
       description: 'Teach concepts and explain ideas',
       icon: <GraduationCap className="h-8 w-8" />,
-      color: 'from-yellow-500 to-orange-600',
+      color: 'from-gray-500 to-gray-700',
       templates: ['explainer-video', 'shorts-educational', 'product-tutorial'],
     },
     {
@@ -69,7 +69,7 @@ function OnboardingContent() {
       title: 'UGC & Testimonials',
       description: 'Authentic user-generated style content',
       icon: <Heart className="h-8 w-8" />,
-      color: 'from-red-500 to-rose-600',
+      color: 'from-gray-500 to-gray-700',
       templates: ['ugc-testimonial', 'ugc-unboxing', 'testimonial-compilation'],
     },
   ];
@@ -117,20 +117,20 @@ function OnboardingContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 flex items-center justify-center p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-gray-900 flex items-center justify-center p-8">
       <div className="max-w-5xl w-full">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center">
-              <Sparkles className="h-7 w-7 text-purple-600" />
+              <Sparkles className="h-7 w-7 text-gray-600" />
             </div>
             <h1 className="text-4xl font-bold text-white">Welcome to VideoAI!</h1>
           </div>
-          <p className="text-xl text-purple-200">
+          <p className="text-xl text-gray-300">
             You have <span className="font-bold text-white">10 FREE CREDITS</span> to get started! 🎁
           </p>
-          <p className="text-purple-300 mt-2">
+          <p className="text-gray-400 mt-2">
             Let's personalize your experience - What type of videos do you want to create?
           </p>
         </div>
@@ -149,7 +149,7 @@ function OnboardingContent() {
             >
               {/* Selected Checkmark */}
               {selectedGoals.includes(goal.id) && (
-                <div className="absolute top-4 right-4 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                <div className="absolute top-4 right-4 w-8 h-8 bg-gray-500 rounded-full flex items-center justify-center">
                   <svg
                     className="w-5 h-5 text-white"
                     fill="none"
@@ -185,7 +185,7 @@ function OnboardingContent() {
               </h3>
               <p
                 className={`text-sm ${
-                  selectedGoals.includes(goal.id) ? 'text-gray-600' : 'text-purple-200'
+                  selectedGoals.includes(goal.id) ? 'text-gray-600' : 'text-gray-300'
                 }`}
               >
                 {goal.description}
@@ -198,13 +198,13 @@ function OnboardingContent() {
         <div className="flex items-center justify-between">
           <button
             onClick={handleSkip}
-            className="text-purple-300 hover:text-white transition-colors text-sm font-semibold"
+            className="text-gray-400 hover:text-white transition-colors text-sm font-semibold"
           >
             Skip, let me explore
           </button>
 
           <div className="flex items-center gap-4">
-            <div className="text-purple-200 text-sm">
+            <div className="text-gray-300 text-sm">
               {selectedGoals.length === 0
                 ? 'Select at least one goal'
                 : `${selectedGoals.length} goal${selectedGoals.length > 1 ? 's' : ''} selected`}
@@ -215,7 +215,7 @@ function OnboardingContent() {
               className={`flex items-center gap-2 px-8 py-4 rounded-2xl font-bold text-lg transition-all shadow-xl ${
                 selectedGoals.length === 0 || loading
                   ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                  : 'bg-white text-purple-900 hover:bg-purple-50 hover:scale-105'
+                  : 'bg-white text-purple-900 hover:bg-gray-50 hover:scale-105'
               }`}
             >
               {loading ? (
@@ -232,7 +232,7 @@ function OnboardingContent() {
 
         {/* Bottom Info */}
         <div className="mt-12 text-center">
-          <p className="text-purple-300 text-sm">
+          <p className="text-gray-400 text-sm">
             Don't worry, you can change these preferences anytime in settings
           </p>
         </div>

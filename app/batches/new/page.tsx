@@ -146,7 +146,7 @@ function BatchCreatorContent() {
             <p className="text-sm text-gray-500">Create up to 100 videos at once with CSV upload</p>
           </div>
           <div className="flex items-center gap-2">
-            <div className="px-4 py-2 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl border border-blue-200">
+            <div className="px-4 py-2 bg-gradient-to-br from-gray-50 to-gray-50 rounded-xl border border-gray-200">
               <span className="text-xs font-bold text-gray-600">
                 {scripts.length} videos queued
               </span>
@@ -199,16 +199,16 @@ function BatchCreatorContent() {
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-2xl flex items-start gap-3 max-w-3xl mx-auto">
-              <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-red-600 font-medium">{error}</p>
+            <div className="mb-6 p-4 bg-gray-50 border-2 border-gray-200 rounded-2xl flex items-start gap-3 max-w-3xl mx-auto">
+              <AlertCircle className="h-5 w-5 text-gray-600 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-gray-600 font-medium">{error}</p>
             </div>
           )}
 
           {/* Step 1: Template Settings */}
           {currentStep === 'template' && (
             <div className="max-w-3xl mx-auto">
-              <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-[32px] p-8 border-2 border-purple-200 mb-8">
+              <div className="bg-gradient-to-br from-gray-50 to-gray-50 rounded-[32px] p-8 border-2 border-gray-200 mb-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">Setup Video Template</h2>
                 <p className="text-gray-600 mb-6">
                   Configure settings that will apply to all videos in your batch
@@ -304,7 +304,7 @@ function BatchCreatorContent() {
           {/* Step 2: Upload Scripts */}
           {currentStep === 'scripts' && (
             <div className="max-w-3xl mx-auto">
-              <div className="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-[32px] p-8 border-2 border-orange-200 mb-8">
+              <div className="bg-gradient-to-br from-gray-50 to-gray-50 rounded-[32px] p-8 border-2 border-gray-200 mb-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">Upload Scripts</h2>
                 <p className="text-gray-600 mb-6">
                   Upload a CSV file with one script per row (up to 100 videos)
@@ -321,15 +321,15 @@ function BatchCreatorContent() {
                     className="hidden"
                     disabled={uploading}
                   />
-                  <div className="p-12 bg-white border-2 border-dashed border-orange-300 rounded-2xl hover:border-orange-400 hover:bg-orange-50/50 transition-all text-center">
+                  <div className="p-12 bg-white border-2 border-dashed border-orange-300 rounded-2xl hover:border-orange-400 hover:bg-gray-50/50 transition-all text-center">
                     {uploading ? (
                       <>
-                        <div className="w-12 h-12 border-4 border-orange-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                        <div className="w-12 h-12 border-4 border-gray-700 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                         <p className="text-sm font-semibold text-gray-900">Processing CSV...</p>
                       </>
                     ) : (
                       <>
-                        <Upload className="h-12 w-12 text-orange-600 mx-auto mb-4" />
+                        <Upload className="h-12 w-12 text-gray-600 mx-auto mb-4" />
                         <p className="text-lg font-bold text-gray-900 mb-2">
                           Click to upload CSV file
                         </p>
@@ -341,7 +341,7 @@ function BatchCreatorContent() {
                   </div>
                 </label>
 
-                <div className="mt-6 p-4 bg-white rounded-2xl border border-orange-200">
+                <div className="mt-6 p-4 bg-white rounded-2xl border border-gray-200">
                   <h3 className="text-sm font-bold text-gray-900 mb-2">CSV Format Example:</h3>
                   <pre className="text-xs text-gray-700 bg-gray-50 p-3 rounded-lg overflow-x-auto font-mono">
 {`Script
@@ -352,7 +352,7 @@ function BatchCreatorContent() {
                   <a
                     href="/templates/batch-scripts-template.csv"
                     download
-                    className="inline-flex items-center gap-2 mt-3 text-sm font-semibold text-orange-600 hover:text-orange-700"
+                    className="inline-flex items-center gap-2 mt-3 text-sm font-semibold text-gray-600 hover:text-gray-700"
                   >
                     <Download className="h-4 w-4" />
                     Download CSV Template
@@ -422,7 +422,7 @@ function BatchCreatorContent() {
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-xs font-semibold text-gray-600">Credits Required</span>
-                      <span className="text-lg font-bold text-orange-600">
+                      <span className="text-lg font-bold text-gray-600">
                         {scripts.length * 2}
                       </span>
                     </div>
@@ -455,9 +455,9 @@ function BatchCreatorContent() {
                         </p>
                         <button
                           onClick={() => removeScript(script.id)}
-                          className="p-1.5 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-1.5 hover:bg-gray-50 rounded-lg transition-colors"
                         >
-                          <Trash2 className="h-4 w-4 text-red-600" />
+                          <Trash2 className="h-4 w-4 text-gray-600" />
                         </button>
                       </div>
                     ))}
@@ -475,7 +475,7 @@ function BatchCreatorContent() {
                 <button
                   onClick={handleCreateBatch}
                   disabled={creating || scripts.length === 0}
-                  className="flex-1 bg-gradient-to-r from-orange-600 to-pink-600 text-white px-6 py-4 rounded-2xl font-bold hover:shadow-xl transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 bg-gradient-to-r from-gray-700 to-gray-700 text-white px-6 py-4 rounded-2xl font-bold hover:shadow-xl transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {creating ? (
                     <>

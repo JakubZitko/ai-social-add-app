@@ -270,9 +270,9 @@ function CreateProjectContent() {
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-2xl flex items-start gap-3">
-              <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-red-600 font-medium">{error}</p>
+            <div className="mb-6 p-4 bg-gray-50 border-2 border-gray-200 rounded-2xl flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 text-gray-600 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-gray-600 font-medium">{error}</p>
             </div>
           )}
 
@@ -317,7 +317,7 @@ function CreateProjectContent() {
           {/* Section 2: Avatar Selection */}
           <div className="mb-8">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gray-700 rounded-lg flex items-center justify-center">
                 <User className="h-4 w-4 text-white" />
               </div>
               <h2 className="text-lg font-bold text-gray-900">AI Avatar</h2>
@@ -357,7 +357,7 @@ function CreateProjectContent() {
           {projectType === 'gesture_only' && (
             <div className="mb-8">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-gray-700 rounded-lg flex items-center justify-center">
                   <Hand className="h-4 w-4 text-white" />
                 </div>
                 <h2 className="text-lg font-bold text-gray-900">Select Gesture</h2>
@@ -399,7 +399,7 @@ function CreateProjectContent() {
           {projectType === 'talking_actor' && (
             <div className="mb-8">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-gray-700 rounded-lg flex items-center justify-center">
                   <Wand2 className="h-4 w-4 text-white" />
                 </div>
                 <h2 className="text-lg font-bold text-gray-900">Script</h2>
@@ -417,9 +417,9 @@ function CreateProjectContent() {
               />
 
               {/* AI Enhancement Controls */}
-              <div className="mt-4 bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-4 border-2 border-purple-200">
+              <div className="mt-4 bg-gradient-to-br from-gray-50 to-gray-50 rounded-2xl p-4 border-2 border-gray-200">
                 <div className="flex items-center gap-2 mb-3">
-                  <Sparkles className="h-4 w-4 text-purple-600" />
+                  <Sparkles className="h-4 w-4 text-gray-600" />
                   <h3 className="text-sm font-bold text-gray-900">AI Script Enhancement</h3>
                 </div>
 
@@ -456,7 +456,7 @@ function CreateProjectContent() {
                 <button
                   onClick={handleEnhanceScript}
                   disabled={enhancingScript || !scriptText.trim()}
-                  className="w-full px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-4 py-2.5 bg-gray-700 hover:bg-gray-800 text-white rounded-xl font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {enhancingScript ? (
                     <>
@@ -478,7 +478,7 @@ function CreateProjectContent() {
           {projectType === 'talking_actor' && (
             <div className="mb-8">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-gray-700 rounded-lg flex items-center justify-center">
                   <SettingsIcon className="h-4 w-4 text-white" />
                 </div>
                 <h2 className="text-lg font-bold text-gray-900">Voice Settings</h2>
@@ -500,7 +500,7 @@ function CreateProjectContent() {
                   <button
                     onClick={handleVoicePreview}
                     disabled={previewingVoice}
-                    className="w-full px-4 py-2.5 bg-green-50 hover:bg-green-100 border-2 border-green-200 text-green-700 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full px-4 py-2.5 bg-gray-50 hover:bg-gray-100 border-2 border-gray-200 text-gray-700 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                   >
                     {previewingVoice ? (
                       <>
@@ -681,11 +681,11 @@ function CreateProjectContent() {
         size="full"
       >
         {/* Custom Avatar Upload */}
-        <div className="mb-6 bg-gradient-to-br from-orange-50 to-pink-50 rounded-2xl p-4 border-2 border-orange-200">
+        <div className="mb-6 bg-gradient-to-br from-gray-50 to-gray-50 rounded-2xl p-4 border-2 border-gray-200">
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <Upload className="h-4 w-4 text-orange-600" />
+                <Upload className="h-4 w-4 text-gray-600" />
                 <h3 className="text-sm font-bold text-gray-900">Create Custom Avatar</h3>
               </div>
               <p className="text-xs text-gray-600">Upload your photo to create a personalized AI actor</p>
@@ -701,7 +701,7 @@ function CreateProjectContent() {
                 className="hidden"
                 disabled={uploadingAvatar}
               />
-              <div className="px-4 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-xl font-semibold transition-all flex items-center gap-2 disabled:opacity-50">
+              <div className="px-4 py-2.5 bg-gray-700 hover:bg-gray-800 text-white rounded-xl font-semibold transition-all flex items-center gap-2 disabled:opacity-50">
                 {uploadingAvatar ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

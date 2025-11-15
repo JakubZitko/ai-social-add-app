@@ -66,11 +66,11 @@ function ProjectsContent() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'completed':
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
+        return <CheckCircle className="h-4 w-4 text-gray-600" />;
       case 'processing':
-        return <Loader className="h-4 w-4 text-blue-600 animate-spin" />;
+        return <Loader className="h-4 w-4 text-gray-600 animate-spin" />;
       case 'failed':
-        return <XCircle className="h-4 w-4 text-red-600" />;
+        return <XCircle className="h-4 w-4 text-gray-600" />;
       case 'draft':
         return <Clock className="h-4 w-4 text-gray-400" />;
       default:
@@ -81,11 +81,11 @@ function ProjectsContent() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
-        return 'bg-green-50 text-green-700 border-green-200';
+        return 'bg-gray-50 text-gray-700 border-gray-200';
       case 'processing':
-        return 'bg-blue-50 text-blue-700 border-blue-200';
+        return 'bg-gray-50 text-gray-700 border-gray-200';
       case 'failed':
-        return 'bg-red-50 text-red-700 border-red-200';
+        return 'bg-gray-50 text-gray-700 border-gray-200';
       case 'draft':
         return 'bg-gray-50 text-gray-700 border-gray-200';
       default:
@@ -203,9 +203,9 @@ function ProjectsContent() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-4 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-[24px] p-6 border-2 border-blue-200">
+          <div className="bg-gradient-to-br from-gray-50 to-indigo-50 rounded-[24px] p-6 border-2 border-gray-200">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center">
                 <Video className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -215,9 +215,9 @@ function ProjectsContent() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-[24px] p-6 border-2 border-green-200">
+          <div className="bg-gradient-to-br from-gray-50 to-gray-50 rounded-[24px] p-6 border-2 border-gray-200">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center">
                 <CheckCircle className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -227,9 +227,9 @@ function ProjectsContent() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-[24px] p-6 border-2 border-yellow-200">
+          <div className="bg-gradient-to-br from-gray-50 to-gray-50 rounded-[24px] p-6 border-2 border-gray-200">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-12 h-12 bg-yellow-600 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center">
                 <Loader className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -239,9 +239,9 @@ function ProjectsContent() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-red-50 to-pink-50 rounded-[24px] p-6 border-2 border-red-200">
+          <div className="bg-gradient-to-br from-gray-50 to-gray-50 rounded-[24px] p-6 border-2 border-gray-200">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center">
                 <XCircle className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -414,7 +414,7 @@ function ProjectsContent() {
                     {project.status === 'failed' && (
                       <button
                         onClick={() => handleRetryGeneration(project.id)}
-                        className="flex-1 px-4 py-2 bg-red-50 text-red-700 border border-red-200 rounded-xl text-sm font-semibold hover:bg-red-100 transition-colors"
+                        className="flex-1 px-4 py-2 bg-gray-50 text-gray-700 border border-gray-200 rounded-xl text-sm font-semibold hover:bg-red-100 transition-colors"
                       >
                         Retry Generation
                       </button>
@@ -428,15 +428,15 @@ function ProjectsContent() {
                       </button>
                     )}
                     {project.status === 'processing' && (
-                      <div className="flex-1 px-4 py-2 bg-blue-50 text-blue-700 border border-blue-200 rounded-xl text-sm font-semibold text-center">
+                      <div className="flex-1 px-4 py-2 bg-gray-50 text-gray-700 border border-gray-200 rounded-xl text-sm font-semibold text-center">
                         Processing...
                       </div>
                     )}
                     <button
                       onClick={() => handleDeleteProject(project.id)}
-                      className="p-2 hover:bg-red-50 rounded-xl transition-colors"
+                      className="p-2 hover:bg-gray-50 rounded-xl transition-colors"
                     >
-                      <Trash2 className="h-5 w-5 text-red-600" />
+                      <Trash2 className="h-5 w-5 text-gray-600" />
                     </button>
                   </div>
                 </div>

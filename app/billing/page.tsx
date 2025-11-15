@@ -189,9 +189,9 @@ function BillingContent() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-3 gap-6 mb-8">
-          <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-[24px] p-6 border-2 border-green-200">
+          <div className="bg-gradient-to-br from-gray-50 to-gray-50 rounded-[24px] p-6 border-2 border-gray-200">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center">
                 <Sparkles className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -201,9 +201,9 @@ function BillingContent() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-[24px] p-6 border-2 border-blue-200">
+          <div className="bg-gradient-to-br from-gray-50 to-indigo-50 rounded-[24px] p-6 border-2 border-gray-200">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center">
                 <TrendingUp className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -213,9 +213,9 @@ function BillingContent() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-[24px] p-6 border-2 border-purple-200">
+          <div className="bg-gradient-to-br from-gray-50 to-gray-50 rounded-[24px] p-6 border-2 border-gray-200">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center">
                 <Package className="h-6 w-6 text-white" />
               </div>
               <div>
@@ -271,7 +271,7 @@ function BillingContent() {
                 {plan.badge && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                     <div className={`px-4 py-1.5 rounded-full text-xs font-bold text-white shadow-lg ${
-                      plan.popular ? 'bg-gray-900' : 'bg-gradient-to-r from-purple-600 to-pink-600'
+                      plan.popular ? 'bg-gray-900' : 'bg-gradient-to-r from-gray-700 to-gray-700'
                     }`}>
                       {plan.badge}
                     </div>
@@ -296,7 +296,7 @@ function BillingContent() {
                 <ul className="space-y-3 mb-6">
                   {plan.features.map((feature, index) => (
                     <li key={index} className="flex items-start gap-2 text-sm">
-                      <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
+                      <Check className="h-5 w-5 text-gray-600 shrink-0 mt-0.5" />
                       <span className="text-gray-700">{feature}</span>
                     </li>
                   ))}
@@ -318,7 +318,7 @@ function BillingContent() {
           </div>
 
           {/* Enterprise CTA */}
-          <div className="mt-8 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-[24px] p-8 border-2 border-indigo-200">
+          <div className="mt-8 bg-gradient-to-br from-gray-50 to-gray-50 rounded-[24px] p-8 border-2 border-gray-200">
             <div className="flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-2">
@@ -369,10 +369,10 @@ function BillingContent() {
                   <div className="flex items-center gap-2">
                     <span className={`px-2 py-0.5 rounded-lg text-xs font-semibold ${
                       transaction.status === 'completed'
-                        ? 'bg-green-50 text-green-700'
+                        ? 'bg-gray-50 text-gray-700'
                         : transaction.status === 'pending'
-                        ? 'bg-yellow-50 text-yellow-700'
-                        : 'bg-red-50 text-red-700'
+                        ? 'bg-gray-50 text-gray-700'
+                        : 'bg-gray-50 text-gray-700'
                     }`}>
                       {transaction.status}
                     </span>

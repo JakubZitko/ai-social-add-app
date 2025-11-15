@@ -156,7 +156,7 @@ function TikTokAdContent() {
           <div className="grid grid-cols-2 gap-3">
             {template.features.map((feature, index) => (
               <div key={index} className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-green-600" />
+                <Check className="h-4 w-4 text-gray-600" />
                 <span className="text-sm text-gray-700">{feature}</span>
               </div>
             ))}
@@ -295,8 +295,8 @@ function TikTokAdContent() {
 
           {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
-              {error}
+            <div className="mb-6 p-4 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 text-sm font-semibold">
+              ⚠️ {error}
             </div>
           )}
 

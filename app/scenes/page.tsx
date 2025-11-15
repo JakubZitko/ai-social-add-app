@@ -41,6 +41,54 @@ function SceneGeneratorContent() {
   const [error, setError] = useState('');
   const [generatedScenes, setGeneratedScenes] = useState<GeneratedScene[]>([]);
 
+  const handleDownloadScene = async (sceneId: string) => {
+    const scene = generatedScenes.find(s => s.id === sceneId);
+    if (!scene?.videoUrl) {
+      alert('Video not available for download');
+      return;
+    }
+
+    try {
+      const response = await fetch(scene.videoUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `scene-${scene.id}.mp4`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading scene:', error);
+      alert('Failed to download scene. Please try again.');
+    }
+  };
+
+  const handleRegenerateScene = async (sceneId: string) => {
+    const scene = generatedScenes.find(s => s.id === sceneId);
+    if (!scene) return;
+
+    setGeneratedScenes(prev =>
+      prev.map(s =>
+        s.id === sceneId
+          ? { ...s, status: 'generating' as const }
+          : s
+      )
+    );
+
+    // Simulate regeneration
+    setTimeout(() => {
+      setGeneratedScenes(prev =>
+        prev.map(s =>
+          s.id === sceneId
+            ? { ...s, status: 'completed' as const }
+            : s
+        )
+      );
+    }, 5000);
+  };
+
   const handleGenerateScene = async () => {
     if (!scenePrompt.trim()) {
       setError('Please enter a scene description');
@@ -109,16 +157,16 @@ function SceneGeneratorContent() {
             <div className="lg:col-span-1">
               <div className="bg-white rounded-[32px] p-6 border border-gray-200 shadow-lg sticky top-28">
                 <div className="flex items-center gap-2 mb-6">
-                  <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl flex items-center justify-center">
+                  <div className="w-10 h-10 bg-gradient-to-br from-gray-700 to-gray-700 rounded-xl flex items-center justify-center">
                     <Film className="h-5 w-5 text-white" />
                   </div>
                   <h2 className="text-lg font-bold text-gray-900">Generate Scene</h2>
                 </div>
 
                 {error && (
-                  <div className="mb-4 p-3 bg-red-50 border-2 border-red-200 rounded-xl flex items-start gap-2">
-                    <AlertCircle className="h-4 w-4 text-red-600 flex-shrink-0 mt-0.5" />
-                    <p className="text-xs text-red-600 font-medium">{error}</p>
+                  <div className="mb-4 p-3 bg-gray-50 border-2 border-gray-200 rounded-xl flex items-start gap-2">
+                    <AlertCircle className="h-4 w-4 text-gray-600 flex-shrink-0 mt-0.5" />
+                    <p className="text-xs text-gray-600 font-medium">{error}</p>
                   </div>
                 )}
 
@@ -161,7 +209,7 @@ function SceneGeneratorContent() {
                   <button
                     onClick={handleGenerateScene}
                     disabled={generating || !scenePrompt.trim()}
-                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-2xl font-bold hover:shadow-xl transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full bg-gradient-to-r from-gray-700 to-gray-700 text-white px-6 py-3 rounded-2xl font-bold hover:shadow-xl transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {generating ? (
                       <>
@@ -177,7 +225,7 @@ function SceneGeneratorContent() {
                   </button>
                 </div>
 
-                <div className="mt-6 p-4 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl border border-blue-200">
+                <div className="mt-6 p-4 bg-gradient-to-br from-gray-50 to-gray-50 rounded-2xl border border-gray-200">
                   <h3 className="text-sm font-bold text-gray-900 mb-2">💡 Pro Tips</h3>
                   <ul className="text-xs text-gray-700 space-y-1">
                     <li>• Be specific with lighting, time of day, and mood</li>
@@ -200,8 +248,8 @@ function SceneGeneratorContent() {
 
               {generatedScenes.length === 0 ? (
                 <div className="bg-white rounded-[32px] p-12 border border-gray-200 text-center">
-                  <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <ImageIcon className="h-10 w-10 text-purple-600" />
+                  <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <ImageIcon className="h-10 w-10 text-gray-600" />
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-3">No scenes yet</h3>
                   <p className="text-gray-600 mb-6 max-w-md mx-auto">
@@ -245,7 +293,7 @@ function SceneGeneratorContent() {
                               {scene.prompt}
                             </p>
                             <div className="flex items-center gap-2 text-xs text-gray-600">
-                              <span className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded-lg font-semibold">
+                              <span className="px-2 py-0.5 bg-gray-100 text-gray-700 rounded-lg font-semibold">
                                 {scene.style}
                               </span>
                               <span>{scene.createdAt.toLocaleString()}</span>
@@ -255,11 +303,17 @@ function SceneGeneratorContent() {
 
                         {scene.status === 'completed' && (
                           <div className="flex gap-2 mt-3">
-                            <button className="flex-1 px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl text-xs font-semibold text-gray-900 transition-colors flex items-center justify-center gap-1">
+                            <button
+                              onClick={() => handleDownloadScene(scene.id)}
+                              className="flex-1 px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl text-xs font-semibold text-gray-900 transition-colors flex items-center justify-center gap-1"
+                            >
                               <Download className="h-3 w-3" />
                               Download
                             </button>
-                            <button className="flex-1 px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl text-xs font-semibold text-gray-900 transition-colors flex items-center justify-center gap-1">
+                            <button
+                              onClick={() => handleRegenerateScene(scene.id)}
+                              className="flex-1 px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl text-xs font-semibold text-gray-900 transition-colors flex items-center justify-center gap-1"
+                            >
                               <RefreshCw className="h-3 w-3" />
                               Regenerate
                             </button>

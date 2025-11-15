@@ -110,11 +110,11 @@ const AvatarDrawer: React.FC<AvatarDrawerProps> = ({ isOpen, onClose, onSelect }
                     </div>
                     <div className="flex gap-1 mt-2">
                       <div
-                        className="w-3 h-3 rounded-full bg-blue-100 border border-blue-200"
+                        className="w-3 h-3 rounded-full bg-gray-100 border border-gray-200"
                         title="Blue Shirt"
                       ></div>
                       <div
-                        className="w-3 h-3 rounded-full bg-green-100 border border-green-200"
+                        className="w-3 h-3 rounded-full bg-gray-100 border border-gray-200"
                         title="Casual"
                       ></div>
                     </div>
@@ -179,19 +179,19 @@ function DashboardContent() {
   const getStatusBadge = (status: string) => {
     const badges = {
       completed: (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
-          <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span> Ready
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-700 border border-green-100">
+          <span className="w-1.5 h-1.5 rounded-full bg-gray-500"></span> Ready
         </span>
       ),
       processing: (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
-          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>{' '}
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-700 border border-blue-100">
+          <span className="w-1.5 h-1.5 rounded-full bg-gray-500 animate-pulse"></span>{' '}
           Processing
         </span>
       ),
       failed: (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-100">
-          <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span> Failed
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-700 border border-red-100">
+          <span className="w-1.5 h-1.5 rounded-full bg-gray-500"></span> Failed
         </span>
       ),
       draft: (
@@ -267,7 +267,7 @@ function DashboardContent() {
 
               <div className="bg-white p-6 rounded-[32px] border border-gray-100 shadow-lg shadow-gray-100/50">
                 <div className="flex justify-between items-start mb-8">
-                  <div className="p-2 bg-green-50 text-green-600 rounded-xl">
+                  <div className="p-2 bg-gray-50 text-gray-600 rounded-xl">
                     <Video className="w-5 h-5" />
                   </div>
                   <span className="text-xs font-bold bg-gray-50 px-2 py-1 rounded text-gray-500">
@@ -280,7 +280,7 @@ function DashboardContent() {
 
               <div className="bg-white p-6 rounded-[32px] border border-gray-100 shadow-lg shadow-gray-100/50">
                 <div className="flex justify-between items-start mb-8">
-                  <div className="p-2 bg-purple-50 text-purple-600 rounded-xl">
+                  <div className="p-2 bg-gray-50 text-gray-600 rounded-xl">
                     <Mic className="w-5 h-5" />
                   </div>
                 </div>
