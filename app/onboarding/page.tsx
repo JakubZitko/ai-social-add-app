@@ -215,7 +215,7 @@ function OnboardingContent() {
               className={`flex items-center gap-2 px-8 py-4 rounded-2xl font-bold text-lg transition-all shadow-xl ${
                 selectedGoals.length === 0 || loading
                   ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                  : 'bg-white text-purple-900 hover:bg-gray-50 hover:scale-105'
+                  : 'bg-white text-gray-900 hover:bg-gray-50 hover:scale-105'
               }`}
             >
               {loading ? (

@@ -337,7 +337,7 @@ function SettingsContent() {
                   <p className="text-gray-700 mb-4">
                     Permanently delete your account and all associated data. This action cannot be undone.
                   </p>
-                  <button className="flex items-center gap-2 px-6 py-3 bg-gray-700 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors">
+                  <button className="flex items-center gap-2 px-6 py-3 bg-gray-700 text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors">
                     <Trash2 className="h-5 w-5" />
                     Delete Account
                   </button>
@@ -551,7 +551,7 @@ function SettingsContent() {
                         <p className="text-sm text-gray-700 mb-4">
                           Add an extra layer of security to your account
                         </p>
-                        <span className="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-800 border border-green-300 rounded-lg text-xs font-semibold">
+                        <span className="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-800 border border-gray-300 rounded-lg text-xs font-semibold">
                           <Check className="h-3 w-3 mr-1" />
                           Enabled
                         </span>

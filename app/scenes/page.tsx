@@ -276,7 +276,7 @@ function SceneGeneratorContent() {
                           </div>
                         ) : (
                           <div className="text-center">
-                            <AlertCircle className="h-12 w-12 text-red-400 mx-auto mb-3" />
+                            <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-3" />
                             <p className="text-white font-bold">Generation Failed</p>
                           </div>
                         )}

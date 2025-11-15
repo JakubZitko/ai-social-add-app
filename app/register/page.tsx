@@ -95,8 +95,8 @@ export default function RegisterPage() {
             {/* Benefits Cards */}
             <div className="space-y-4 pt-4">
               <div className="bg-white rounded-[24px] p-6 border border-gray-200 shadow-sm flex items-start gap-4">
-                <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center flex-shrink-0">
-                  <CreditCard className="w-6 h-6 text-green-600" />
+                <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+                  <CreditCard className="w-6 h-6 text-gray-700" />
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900 mb-1">5 Free Credits</h3>
@@ -105,8 +105,8 @@ export default function RegisterPage() {
               </div>
 
               <div className="bg-white rounded-[24px] p-6 border border-gray-200 shadow-sm flex items-start gap-4">
-                <div className="w-12 h-12 bg-purple-50 rounded-2xl flex items-center justify-center flex-shrink-0">
-                  <Video className="w-6 h-6 text-purple-600" />
+                <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+                  <Video className="w-6 h-6 text-gray-700" />
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900 mb-1">100+ AI Avatars</h3>
@@ -115,8 +115,8 @@ export default function RegisterPage() {
               </div>
 
               <div className="bg-white rounded-[24px] p-6 border border-gray-200 shadow-sm flex items-start gap-4">
-                <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center flex-shrink-0">
-                  <Zap className="w-6 h-6 text-blue-600" />
+                <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+                  <Zap className="w-6 h-6 text-gray-700" />
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900 mb-1">60-Second Generation</h3>
@@ -143,9 +143,9 @@ export default function RegisterPage() {
           </div>
 
           {/* Free Credits Badge */}
-          <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-200 rounded-2xl">
+          <div className="mb-6 p-4 bg-gradient-to-r from-gray-50 to-gray-50 border-2 border-gray-200 rounded-2xl">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-green-600" />
+              <Sparkles className="h-5 w-5 text-gray-700" />
               <span className="text-sm font-bold text-gray-900">
                 Get 5 free credits to start creating now!
               </span>
@@ -153,8 +153,8 @@ export default function RegisterPage() {
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl">
-              <p className="text-sm text-red-600">{error}</p>
+            <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-2xl">
+              <p className="text-sm text-gray-700">{error}</p>
             </div>
           )}
 

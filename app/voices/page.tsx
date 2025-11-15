@@ -349,7 +349,7 @@ function VoicesContent() {
                         key={i}
                         className={`h-4 w-4 ${
                           i < Math.floor(voice.rating)
-                            ? 'text-yellow-500 fill-yellow-500'
+                            ? 'text-gray-700 fill-gray-700'
                             : 'text-gray-300'
                         }`}
                       />
@@ -397,7 +397,7 @@ function VoicesContent() {
                 Upload audio samples to create your own AI voice clone. We recommend at least 10 minutes of clear audio.
               </p>
 
-              <div className="bg-gradient-to-br from-gray-50 to-gray-50 rounded-[24px] p-8 border-2 border-dashed border-purple-300 text-center mb-6">
+              <div className="bg-gradient-to-br from-gray-50 to-gray-50 rounded-[24px] p-8 border-2 border-dashed border-gray-300 text-center mb-6">
                 <Upload className="h-12 w-12 text-gray-600 mx-auto mb-4" />
                 <h3 className="text-lg font-bold text-gray-900 mb-2">Drop audio files here</h3>
                 <p className="text-sm text-gray-600 mb-4">or click to browse</p>

@@ -321,7 +321,7 @@ function BatchCreatorContent() {
                     className="hidden"
                     disabled={uploading}
                   />
-                  <div className="p-12 bg-white border-2 border-dashed border-orange-300 rounded-2xl hover:border-orange-400 hover:bg-gray-50/50 transition-all text-center">
+                  <div className="p-12 bg-white border-2 border-dashed border-gray-300 rounded-2xl hover:border-gray-400 hover:bg-gray-50/50 transition-all text-center">
                     {uploading ? (
                       <>
                         <div className="w-12 h-12 border-4 border-gray-700 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>

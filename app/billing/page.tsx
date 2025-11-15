@@ -231,7 +231,7 @@ function BillingContent() {
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="h-6 w-6 text-yellow-400" />
+                <Sparkles className="h-6 w-6 text-gray-300" />
                 <span className="text-sm font-semibold text-gray-300 uppercase tracking-wider">
                   Your Balance
                 </span>
@@ -407,7 +407,7 @@ function BillingContent() {
           <h2 className="text-xl font-bold text-gray-900 mb-4">Payment Method</h2>
           <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-gradient-to-br from-gray-700 to-gray-700 rounded-xl flex items-center justify-center">
                 <CreditCard className="h-6 w-6 text-white" />
               </div>
               <div>

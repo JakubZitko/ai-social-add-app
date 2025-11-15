@@ -179,18 +179,18 @@ function DashboardContent() {
   const getStatusBadge = (status: string) => {
     const badges = {
       completed: (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-700 border border-green-100">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-700 border border-gray-200">
           <span className="w-1.5 h-1.5 rounded-full bg-gray-500"></span> Ready
         </span>
       ),
       processing: (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-700 border border-blue-100">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-700 border border-gray-200">
           <span className="w-1.5 h-1.5 rounded-full bg-gray-500 animate-pulse"></span>{' '}
           Processing
         </span>
       ),
       failed: (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-700 border border-red-100">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-700 border border-gray-200">
           <span className="w-1.5 h-1.5 rounded-full bg-gray-500"></span> Failed
         </span>
       ),

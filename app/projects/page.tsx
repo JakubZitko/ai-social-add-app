@@ -414,7 +414,7 @@ function ProjectsContent() {
                     {project.status === 'failed' && (
                       <button
                         onClick={() => handleRetryGeneration(project.id)}
-                        className="flex-1 px-4 py-2 bg-gray-50 text-gray-700 border border-gray-200 rounded-xl text-sm font-semibold hover:bg-red-100 transition-colors"
+                        className="flex-1 px-4 py-2 bg-gray-50 text-gray-700 border border-gray-200 rounded-xl text-sm font-semibold hover:bg-gray-100 transition-colors"
                       >
                         Retry Generation
                       </button>
