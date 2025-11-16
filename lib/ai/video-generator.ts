@@ -1,5 +1,6 @@
 import { updateProjectWithVideo, updateProjectStatus } from '@/lib/firestore/projects';
 import { uploadVideoToStorage } from '@/lib/storage/upload';
+import { generateTTS } from './tts';
 
 /**
  * Video generation configuration
@@ -31,7 +32,12 @@ export async function generateVideo(config: VideoConfig): Promise<void> {
 
   try {
     // Step 1: Generate TTS audio (if needed)
-    const audioUrl = await generateTTS(script, voice);
+    const ttsResult = await generateTTS({
+      text: script,
+      voiceId: voice,
+      provider: 'elevenlabs',
+    }, userId, projectId);
+    const audioUrl = ttsResult.audioUrl;
     console.log(`🎤 Audio generated: ${audioUrl}`);
 
     // Step 2: Create video with D-ID or similar service
@@ -78,54 +84,6 @@ export async function generateVideo(config: VideoConfig): Promise<void> {
   }
 }
 
-/**
- * Generate TTS audio using ElevenLabs or similar
- */
-async function generateTTS(text: string, voiceId: string): Promise<string> {
-  // For now, we'll use a placeholder
-  // TODO: Integrate with ElevenLabs API
-  const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
-
-  if (!ELEVENLABS_API_KEY) {
-    console.warn('⚠️ ElevenLabs API key not configured, using default voice');
-    return 'https://example.com/default-audio.mp3'; // Placeholder
-  }
-
-  try {
-    const response = await fetch(
-      `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
-      {
-        method: 'POST',
-        headers: {
-          'Accept': 'audio/mpeg',
-          'Content-Type': 'application/json',
-          'xi-api-key': ELEVENLABS_API_KEY,
-        },
-        body: JSON.stringify({
-          text,
-          model_id: 'eleven_monolingual_v1',
-          voice_settings: {
-            stability: 0.5,
-            similarity_boost: 0.5,
-          },
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`ElevenLabs API error: ${response.statusText}`);
-    }
-
-    // Upload audio to storage and return URL
-    // TODO: Implement audio upload to Firebase Storage
-    const audioBlob = await response.blob();
-
-    return 'https://example.com/audio.mp3'; // Placeholder
-  } catch (error) {
-    console.error('TTS generation error:', error);
-    throw error;
-  }
-}
 
 /**
  * Create video using D-ID API

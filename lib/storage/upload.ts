@@ -208,3 +208,36 @@ export async function uploadBackgroundImage(
     throw new Error(`Background upload failed: ${error.message}`);
   }
 }
+
+/**
+ * Upload audio file to Firebase Storage (for TTS)
+ */
+export async function uploadAudioToStorage(
+  audioBlob: Blob,
+  userId: string,
+  projectId: string
+): Promise<string> {
+  try {
+    const filename = `audio_${projectId}_${Date.now()}.mp3`;
+    const audioPath = `audio/${userId}/${filename}`;
+
+    console.log(`☁️  Uploading audio to Firebase Storage: ${audioPath}`);
+    const audioRef = ref(storage, audioPath);
+    await uploadBytes(audioRef, audioBlob, {
+      contentType: 'audio/mpeg',
+      customMetadata: {
+        userId,
+        projectId,
+        uploadedAt: new Date().toISOString(),
+      },
+    });
+
+    const url = await getDownloadURL(audioRef);
+    console.log(`✅ Audio uploaded: ${url}`);
+
+    return url;
+  } catch (error: any) {
+    console.error('Error uploading audio:', error);
+    throw new Error(`Audio upload failed: ${error.message}`);
+  }
+}
