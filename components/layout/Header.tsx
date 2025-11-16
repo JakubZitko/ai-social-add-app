@@ -41,6 +41,12 @@ export function Header() {
           >
             Examples
           </Link>
+          <Link
+            href="/docs"
+            className="text-sm font-semibold leading-6 text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            Docs
+          </Link>
         </div>
 
         {/* Auth Buttons */}
@@ -109,6 +115,13 @@ export function Header() {
               onClick={() => setMobileMenuOpen(false)}
             >
               Examples
+            </Link>
+            <Link
+              href="/docs"
+              className="block rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-50"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Docs
             </Link>
             <div className="border-t border-gray-200 pt-2">
               {user ? (
