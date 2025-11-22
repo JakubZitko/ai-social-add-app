@@ -16,19 +16,60 @@ import {
   Play,
   AlertCircle,
 } from 'lucide-react';
-import { doc, getDoc, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, onSnapshot, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { Project } from '@/types';
+import { useToast } from '@/components/ui/Toast';
+import { SAMPLE_OUTPUT_VIDEO } from '@/lib/data/demoData';
 
 function VideoPageContent() {
   const router = useRouter();
   const params = useParams();
   const { user } = useAuth();
   const videoId = params.id as string;
+  const toast = useToast();
 
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [simulationProgress, setSimulationProgress] = useState(0);
+
+  // Simulate video generation for draft/processing projects
+  const simulateVideoGeneration = async (projectId: string) => {
+    try {
+      // Simulate progress
+      const progressInterval = setInterval(() => {
+        setSimulationProgress((prev) => Math.min(prev + 10, 90));
+      }, 500);
+
+      // Simulate 5 second generation time
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+
+      clearInterval(progressInterval);
+      setSimulationProgress(100);
+
+      // Update project in Firestore with sample output
+      const projectRef = doc(db, 'projects', projectId);
+      await updateDoc(projectRef, {
+        status: 'completed',
+        outputUrl: SAMPLE_OUTPUT_VIDEO,
+        completedAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+
+      toast.success('Video Generated!', 'Your video is ready to download');
+    } catch (err) {
+      console.error('Error simulating video generation:', err);
+      // Even if Firestore update fails, update local state for demo
+      setProject((prev) => prev ? {
+        ...prev,
+        status: 'completed',
+        outputUrl: SAMPLE_OUTPUT_VIDEO,
+        completedAt: new Date(),
+      } : null);
+      toast.success('Video Generated!', 'Your video is ready (demo mode)');
+    }
+  };
 
   useEffect(() => {
     if (!videoId || !user) return;
@@ -39,16 +80,22 @@ function VideoPageContent() {
     // Set up real-time listener for status updates
     const unsubscribe = onSnapshot(
       doc(db, 'projects', videoId),
-      (doc) => {
-        if (doc.exists()) {
-          const data = doc.data();
-          setProject({
-            id: doc.id,
+      (docSnapshot) => {
+        if (docSnapshot.exists()) {
+          const data = docSnapshot.data();
+          const projectData = {
+            id: docSnapshot.id,
             ...data,
             createdAt: data.createdAt?.toDate() || new Date(),
             updatedAt: data.updatedAt?.toDate() || new Date(),
             completedAt: data.completedAt?.toDate(),
-          } as Project);
+          } as Project;
+          setProject(projectData);
+
+          // Auto-simulate if project is in draft or processing status
+          if ((data.status === 'draft' || data.status === 'processing') && !data.outputUrl) {
+            simulateVideoGeneration(docSnapshot.id);
+          }
         }
       },
       (err) => {
@@ -327,13 +374,18 @@ function VideoPageContent() {
                   </div>
                 </div>
 
-                {project.status === 'processing' && (
+                {(project.status === 'processing' || project.status === 'draft') && !project.outputUrl && (
                   <div className="space-y-2">
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-gray-900 h-2 rounded-full animate-pulse w-2/3" />
+                      <div
+                        className="bg-gray-900 h-2 rounded-full transition-all duration-500"
+                        style={{ width: `${simulationProgress}%` }}
+                      />
                     </div>
                     <p className="text-sm text-gray-600 font-medium">
-                      Estimated time: 1-3 minutes
+                      {simulationProgress < 100
+                        ? `Generating video... ${simulationProgress}%`
+                        : 'Almost done...'}
                     </p>
                   </div>
                 )}

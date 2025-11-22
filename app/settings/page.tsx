@@ -23,6 +23,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import Link from 'next/link';
+import { useToast } from '@/components/ui/Toast';
 
 interface TeamMember {
   id: string;
@@ -47,6 +48,7 @@ export default function SettingsPage() {
 function SettingsContent() {
   const router = useRouter();
   const { user, signOut } = useAuth();
+  const toast = useToast();
 
   const [activeTab, setActiveTab] = useState<'profile' | 'account' | 'notifications' | 'team' | 'security'>('profile');
   const [saved, setSaved] = useState(false);
@@ -96,19 +98,36 @@ function SettingsContent() {
   const handleSave = () => {
     // Simulate save
     setSaved(true);
+    toast.success('Settings Saved', 'Your changes have been saved successfully');
     setTimeout(() => setSaved(false), 3000);
   };
 
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [showInviteModal, setShowInviteModal] = useState(false);
+
   const handleInviteMember = () => {
-    const email = prompt('Enter email address to invite:');
-    if (email) {
-      alert(`Invitation sent to ${email}`);
+    setShowInviteModal(true);
+  };
+
+  const confirmInvite = () => {
+    if (inviteEmail) {
+      toast.success('Invitation Sent', `An invitation has been sent to ${inviteEmail}`);
+      setInviteEmail('');
+      setShowInviteModal(false);
     }
   };
 
+  const [memberToRemove, setMemberToRemove] = useState<string | null>(null);
+
   const handleRemoveMember = (memberId: string) => {
-    if (confirm('Are you sure you want to remove this team member?')) {
-      setTeamMembers(teamMembers.filter((m) => m.id !== memberId));
+    setMemberToRemove(memberId);
+  };
+
+  const confirmRemoveMember = () => {
+    if (memberToRemove) {
+      setTeamMembers(teamMembers.filter((m) => m.id !== memberToRemove));
+      toast.success('Member Removed', 'Team member has been removed');
+      setMemberToRemove(null);
     }
   };
 
@@ -603,6 +622,62 @@ function SettingsContent() {
           </div>
         </div>
       </div>
+
+      {/* Invite Member Modal */}
+      {showInviteModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-[24px] p-6 max-w-md w-full shadow-2xl">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Invite Team Member</h3>
+            <p className="text-gray-600 mb-4">Enter the email address of the person you want to invite.</p>
+            <input
+              type="email"
+              value={inviteEmail}
+              onChange={(e) => setInviteEmail(e.target.value)}
+              placeholder="email@example.com"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 text-sm mb-4"
+            />
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowInviteModal(false)}
+                className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmInvite}
+                disabled={!inviteEmail}
+                className="flex-1 px-4 py-3 bg-gray-900 text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50"
+              >
+                Send Invite
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Remove Member Confirmation Modal */}
+      {memberToRemove && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-[24px] p-6 max-w-md w-full shadow-2xl">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Remove Team Member?</h3>
+            <p className="text-gray-600 mb-6">Are you sure you want to remove this team member? They will lose access to all shared projects.</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setMemberToRemove(null)}
+                className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmRemoveMember}
+                className="flex-1 px-4 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

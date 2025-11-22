@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
@@ -19,6 +19,8 @@ import {
   CalendarIcon,
   RectangleStackIcon,
   BoltIcon,
+  Bars3Icon,
+  XMarkIcon,
 } from '@heroicons/react/24/outline';
 
 interface NavItemProps {
@@ -52,6 +54,12 @@ export function Sidebar() {
   const { credits } = useCredits();
   const router = useRouter();
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Close sidebar on route change (mobile)
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
 
   const handleSignOut = async () => {
     try {
@@ -63,7 +71,33 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="w-72 flex flex-col p-6 shrink-0 bg-[#F3F4F6]">
+    <>
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-xl shadow-lg border border-gray-200"
+      >
+        {isOpen ? (
+          <XMarkIcon className="h-6 w-6 text-gray-600" />
+        ) : (
+          <Bars3Icon className="h-6 w-6 text-gray-600" />
+        )}
+      </button>
+
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black/50 z-40"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      <aside className={`
+        fixed lg:relative inset-y-0 left-0 z-40
+        w-72 flex flex-col p-6 shrink-0 bg-[#F3F4F6]
+        transform transition-transform duration-300 ease-in-out
+        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
       {/* Logo */}
       <Link href="/dashboard" className="flex items-center gap-3 px-2 mb-10">
         <div className="w-8 h-8 bg-gray-900 rounded-xl flex items-center justify-center">
@@ -199,5 +233,6 @@ export function Sidebar() {
         </button>
       </div>
     </aside>
+    </>
   );
 }

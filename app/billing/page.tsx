@@ -20,9 +20,10 @@ import {
   AlertCircle,
   Loader,
 } from 'lucide-react';
-import { collection, query, where, orderBy, getDocs, limit } from 'firebase/firestore';
+import { collection, query, where, orderBy, getDocs, limit, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { Transaction } from '@/lib/firestore/types';
+import { useToast } from '@/components/ui/Toast';
 
 interface Plan {
   id: string;
@@ -57,11 +58,13 @@ export default function BillingPage() {
 
 function BillingContent() {
   const router = useRouter();
-  const { user} = useAuth();
+  const { user, refreshUser } = useAuth();
+  const toast = useToast();
 
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
+  const [purchasing, setPurchasing] = useState(false);
 
   // Fetch transaction history from Firestore
   useEffect(() => {
@@ -172,10 +175,58 @@ function BillingContent() {
     .filter((t) => t.status === 'completed')
     .reduce((sum, t) => sum + t.credits, 0);
 
-  const handlePurchase = (planId: string) => {
+  const handlePurchase = async (planId: string) => {
+    if (!user) return;
+
+    const plan = plans.find((p) => p.id === planId);
+    if (!plan) return;
+
     setSelectedPlan(planId);
-    // Simulate purchase flow
-    alert(`Redirecting to payment for ${plans.find((p) => p.id === planId)?.name} plan...`);
+    setPurchasing(true);
+
+    try {
+      // Simulate payment processing
+      toast.info('Processing Payment', `Purchasing ${plan.name} plan...`);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // Simulate successful transaction
+      const transactionData = {
+        userId: user.uid,
+        type: 'purchase',
+        planId: planId,
+        planName: plan.name,
+        credits: plan.credits,
+        amount: plan.price,
+        status: 'completed',
+        createdAt: serverTimestamp(),
+      };
+
+      await addDoc(collection(db, 'transactions'), transactionData);
+
+      // Refresh user to get updated credits
+      await refreshUser();
+
+      toast.success('Purchase Successful!', `${plan.credits} credits have been added to your account`);
+
+      // Add to local transactions list
+      setTransactions([
+        {
+          id: Math.random().toString(36).substring(2),
+          date: new Date(),
+          description: `${plan.name} Plan - ${plan.credits} credits`,
+          credits: plan.credits,
+          amount: plan.price,
+          status: 'completed',
+        } as Transaction,
+        ...transactions,
+      ]);
+    } catch (err: any) {
+      console.error('Error processing purchase:', err);
+      toast.error('Purchase Failed', 'Please try again or contact support');
+    } finally {
+      setPurchasing(false);
+      setSelectedPlan(null);
+    }
   };
 
   return (
@@ -305,13 +356,21 @@ function BillingContent() {
                 {/* Purchase Button */}
                 <button
                   onClick={() => handlePurchase(plan.id)}
-                  className={`w-full py-3 rounded-xl font-semibold transition-colors ${
+                  disabled={purchasing}
+                  className={`w-full py-3 rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${
                     plan.popular
                       ? 'bg-gray-900 text-white hover:bg-gray-800'
                       : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
                   }`}
                 >
-                  Purchase Plan
+                  {purchasing && selectedPlan === plan.id ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    'Purchase Plan'
+                  )}
                 </button>
               </div>
             ))}

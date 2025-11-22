@@ -27,13 +27,16 @@ import { Instagram, Youtube } from 'lucide-react';
 import { collection, query, where, orderBy, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { Automation } from '@/lib/firestore/types';
+import { useToast } from '@/components/ui/Toast';
 
 function AutomationsContent() {
   const router = useRouter();
   const { user } = useAuth();
+  const toast = useToast();
   const [automations, setAutomations] = useState<Automation[]>([]);
   const [selectedAutomation, setSelectedAutomation] = useState<Automation | null>(null);
   const [loading, setLoading] = useState(true);
+  const [automationToDelete, setAutomationToDelete] = useState<string | null>(null);
 
   // Fetch user automations from Firestore
   useEffect(() => {
@@ -109,14 +112,21 @@ function AutomationsContent() {
   };
 
   const handleDeleteAutomation = async (id: string) => {
-    if (confirm('Are you sure you want to delete this automation?')) {
-      try {
-        await deleteDoc(doc(db, 'automations', id));
-        setAutomations(automations.filter((a) => a.id !== id));
-      } catch (error) {
-        console.error('Error deleting automation:', error);
-        alert('Failed to delete automation. Please try again.');
-      }
+    setAutomationToDelete(id);
+  };
+
+  const confirmDeleteAutomation = async () => {
+    if (!automationToDelete) return;
+
+    try {
+      await deleteDoc(doc(db, 'automations', automationToDelete));
+      setAutomations(automations.filter((a) => a.id !== automationToDelete));
+      toast.success('Automation Deleted', 'The automation has been removed');
+    } catch (error) {
+      console.error('Error deleting automation:', error);
+      toast.error('Delete Failed', 'Please try again');
+    } finally {
+      setAutomationToDelete(null);
     }
   };
 
@@ -319,7 +329,7 @@ function AutomationsContent() {
                         <Edit className="h-4 w-4 text-gray-600" />
                       </button>
                       <button
-                        onClick={() => deleteAutomation(automation.id)}
+                        onClick={() => handleDeleteAutomation(automation.id)}
                         className="p-2 hover:bg-gray-50 rounded-lg transition-colors"
                         title="Delete"
                       >
@@ -355,6 +365,30 @@ function AutomationsContent() {
           )}
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {automationToDelete && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-[24px] p-6 max-w-md w-full shadow-2xl">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Delete Automation?</h3>
+            <p className="text-gray-600 mb-6">Are you sure you want to delete this automation? This action cannot be undone.</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setAutomationToDelete(null)}
+                className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDeleteAutomation}
+                className="flex-1 px-4 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

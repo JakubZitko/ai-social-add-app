@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { collection, query, getDocs, orderBy } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { Avatar, AvatarFilters } from '@/types';
+import { demoAvatars } from '@/lib/data/demoData';
 
 export function useAvatars() {
   const [avatars, setAvatars] = useState<Avatar[]>([]);
@@ -27,10 +28,19 @@ export function useAvatars() {
         createdAt: doc.data().createdAt?.toDate() || new Date(),
       })) as Avatar[];
 
-      setAvatars(avatarsData);
+      // Use demo data as fallback if no avatars in database
+      if (avatarsData.length === 0) {
+        console.log('No avatars in database, using demo data');
+        setAvatars(demoAvatars);
+      } else {
+        setAvatars(avatarsData);
+      }
     } catch (err: any) {
       console.error('Error fetching avatars:', err);
-      setError(err.message || 'Failed to load avatars');
+      // Use demo data on error
+      console.log('Error fetching avatars, using demo data');
+      setAvatars(demoAvatars);
+      setError(null); // Clear error since we have fallback data
     } finally {
       setLoading(false);
     }

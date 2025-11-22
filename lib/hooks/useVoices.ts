@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { collection, query, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { Voice } from '@/types';
+import { demoVoices } from '@/lib/data/demoData';
 
 export function useVoices() {
   const [voices, setVoices] = useState<Voice[]>([]);
@@ -26,10 +27,19 @@ export function useVoices() {
         ...doc.data(),
       })) as Voice[];
 
-      setVoices(voicesData);
+      // Use demo data as fallback if no voices in database
+      if (voicesData.length === 0) {
+        console.log('No voices in database, using demo data');
+        setVoices(demoVoices);
+      } else {
+        setVoices(voicesData);
+      }
     } catch (err: any) {
       console.error('Error fetching voices:', err);
-      setError(err.message || 'Failed to load voices');
+      // Use demo data on error
+      console.log('Error fetching voices, using demo data');
+      setVoices(demoVoices);
+      setError(null); // Clear error since we have fallback data
     } finally {
       setLoading(false);
     }
