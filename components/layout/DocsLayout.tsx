@@ -112,7 +112,7 @@ export default function DocsLayout({ children }: DocsLayoutProps) {
                   </ul>
                 </div>
               ))}
-            </ul>
+            </div>
           </aside>
 
           {/* Main Content */}
