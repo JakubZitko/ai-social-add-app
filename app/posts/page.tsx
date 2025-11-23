@@ -24,6 +24,7 @@ import { FaTiktok } from 'react-icons/fa';
 import { collection, query, where, orderBy, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { ScheduledPost } from '@/lib/firestore/types';
+import { demoScheduledPosts } from '@/lib/data/demoData';
 
 function ScheduledPostsContent() {
   const router = useRouter();
@@ -49,10 +50,21 @@ function ScheduledPostsContent() {
         const postsData = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
+          scheduledTime: doc.data().scheduledTime?.toDate() || new Date(),
         })) as ScheduledPost[];
-        setPosts(postsData);
+
+        // Use demo data if no posts found
+        if (postsData.length === 0) {
+          console.log('No scheduled posts in database, using demo data');
+          setPosts(demoScheduledPosts as any);
+        } else {
+          setPosts(postsData);
+        }
       } catch (error) {
         console.error('Error fetching posts:', error);
+        // Use demo data on error
+        console.log('Error fetching posts, using demo data');
+        setPosts(demoScheduledPosts as any);
       } finally {
         setLoading(false);
       }

@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { AppLayout } from '@/components/layout/AppLayout';
@@ -34,14 +34,19 @@ import {
   Heart,
 } from 'lucide-react';
 import { ProjectType, VoiceSettings, AudioType, VideoAspectRatio, AvatarFilters as AvatarFiltersType } from '@/types';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
+import { demoProjects } from '@/lib/data/demoData';
 
 function CreateProjectContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, refreshUser } = useAuth();
   const { avatars, loading: avatarsLoading, filterAvatars } = useAvatars();
   const { voices, loading: voicesLoading } = useVoices();
+
+  // Check for remix parameter
+  const remixId = searchParams.get('remix');
 
   // Project state
   const [projectType, setProjectType] = useState<ProjectType>('talking_actor');
@@ -86,6 +91,45 @@ function CreateProjectContent() {
   const filteredAvatars = filterAvatars(avatarFilters);
   const selectedAvatar = avatars.find((a) => a.id === selectedAvatarId);
   const selectedVoice = voices.find((v) => v.id === selectedVoiceId);
+
+  // Load remix project data if remix parameter is present
+  useEffect(() => {
+    const loadRemixProject = async () => {
+      if (!remixId) return;
+
+      try {
+        // Check if it's a demo project
+        if (remixId.startsWith('demo_')) {
+          const demoProject = demoProjects.find((p) => p.id === remixId);
+          if (demoProject) {
+            setScriptText(demoProject.scriptText || '');
+            setSelectedAvatarId(demoProject.selectedAvatarId || '');
+            setSelectedVoiceId(demoProject.selectedVoiceId || '');
+            setAspectRatio((demoProject.aspectRatio as VideoAspectRatio) || '9:16');
+            setProjectType((demoProject.type as ProjectType) || 'talking_actor');
+          }
+        } else {
+          // Load from Firestore
+          const projectDoc = await getDoc(doc(db, 'projects', remixId));
+          if (projectDoc.exists()) {
+            const projectData = projectDoc.data();
+            setScriptText(projectData.scriptText || '');
+            setSelectedAvatarId(projectData.selectedAvatarId || '');
+            setSelectedVoiceId(projectData.selectedVoiceId || '');
+            setAspectRatio(projectData.aspectRatio || '9:16');
+            setProjectType(projectData.type || 'talking_actor');
+            if (projectData.voiceSettings) {
+              setVoiceSettings(projectData.voiceSettings);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error loading remix project:', error);
+      }
+    };
+
+    loadRemixProject();
+  }, [remixId]);
 
   const handleVoicePreview = async () => {
     if (!selectedVoiceId) {
@@ -320,10 +364,10 @@ function CreateProjectContent() {
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-3 tracking-tight">
-              Create New Video
+              {remixId ? 'Remix Video' : 'Create New Video'}
             </h1>
             <p className="text-lg text-gray-600">
-              Configure your AI-generated video in real-time
+              {remixId ? 'Modify and regenerate based on existing video' : 'Configure your AI-generated video in real-time'}
             </p>
           </div>
 

@@ -7,10 +7,10 @@ const plans = [
   {
     name: 'Free',
     price: 0,
-    credits: 5,
+    credits: 10,
     description: 'Perfect for trying out VideoAI',
     features: [
-      '5 free credits',
+      '10 free credits',
       'Access to all avatars',
       'Basic voice options',
       'All video formats',

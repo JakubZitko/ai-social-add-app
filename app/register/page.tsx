@@ -89,7 +89,7 @@ export default function RegisterPage() {
             </h1>
 
             <p className="text-xl text-gray-600">
-              Get started with 5 free credits and create your first AI video in minutes
+              Get started with 10 free credits and create your first AI video in minutes
             </p>
 
             {/* Benefits Cards */}
@@ -99,7 +99,7 @@ export default function RegisterPage() {
                   <CreditCard className="w-6 h-6 text-gray-700" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-gray-900 mb-1">5 Free Credits</h3>
+                  <h3 className="font-bold text-gray-900 mb-1">10 Free Credits</h3>
                   <p className="text-sm text-gray-600">Start creating immediately with no payment required</p>
                 </div>
               </div>
@@ -147,7 +147,7 @@ export default function RegisterPage() {
             <div className="flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-gray-700" />
               <span className="text-sm font-bold text-gray-900">
-                Get 5 free credits to start creating now!
+                Get 10 free credits to start creating now!
               </span>
             </div>
           </div>

@@ -22,6 +22,8 @@ import {
 } from 'lucide-react';
 import { getUserProjects, deleteProject } from '@/lib/firestore/projects';
 import { Project } from '@/lib/firestore/types';
+import { demoProjectsForList } from '@/lib/data/demoData';
+import { useToast } from '@/components/ui/Toast';
 
 export default function ProjectsPage() {
   return (
@@ -36,6 +38,7 @@ export default function ProjectsPage() {
 function ProjectsContent() {
   const router = useRouter();
   const { user } = useAuth();
+  const toast = useToast();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'completed' | 'processing' | 'failed' | 'draft'>('all');
@@ -43,6 +46,7 @@ function ProjectsContent() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [projectToDelete, setProjectToDelete] = useState<string | null>(null);
 
   // Fetch user projects from Firestore
   useEffect(() => {
@@ -52,9 +56,19 @@ function ProjectsContent() {
       try {
         setLoading(true);
         const userProjects = await getUserProjects(user.uid);
-        setProjects(userProjects);
+
+        // Use demo data if no projects found
+        if (userProjects.length === 0) {
+          console.log('No projects in database, using demo data');
+          setProjects(demoProjectsForList as any);
+        } else {
+          setProjects(userProjects);
+        }
       } catch (error) {
         console.error('Error fetching projects:', error);
+        // Use demo data on error
+        console.log('Error fetching projects, using demo data');
+        setProjects(demoProjectsForList as any);
       } finally {
         setLoading(false);
       }
@@ -113,25 +127,40 @@ function ProjectsContent() {
     failed: projects.filter((p) => p.status === 'failed').length,
   };
 
-  const handleDeleteProject = async (id: string) => {
-    if (confirm('Are you sure you want to delete this project?')) {
-      try {
-        await deleteProject(id);
-        setProjects(projects.filter((p) => p.id !== id));
-      } catch (error) {
-        console.error('Error deleting project:', error);
-        alert('Failed to delete project. Please try again.');
+  const handleDeleteProject = (id: string) => {
+    setProjectToDelete(id);
+  };
+
+  const confirmDeleteProject = async () => {
+    if (!projectToDelete) return;
+
+    try {
+      // Check if it's a demo project
+      if (projectToDelete.startsWith('demo_')) {
+        setProjects(projects.filter((p) => p.id !== projectToDelete));
+        toast.success('Project Deleted', 'The project has been removed');
+      } else {
+        await deleteProject(projectToDelete);
+        setProjects(projects.filter((p) => p.id !== projectToDelete));
+        toast.success('Project Deleted', 'The project has been removed');
       }
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      toast.error('Delete Failed', 'Please try again');
+    } finally {
+      setProjectToDelete(null);
     }
   };
 
   const handleDownloadVideo = async (videoUrl: string, title: string) => {
     if (!videoUrl) {
-      alert('Video URL not available');
+      toast.error('Download Failed', 'Video URL not available');
       return;
     }
 
     try {
+      toast.info('Downloading...', 'Your video download has started');
+
       // Fetch the video file
       const response = await fetch(videoUrl);
       const blob = await response.blob();
@@ -147,9 +176,11 @@ function ProjectsContent() {
       // Cleanup
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
+
+      toast.success('Download Complete', 'Your video has been downloaded');
     } catch (error) {
       console.error('Error downloading video:', error);
-      alert('Failed to download video. Please try again.');
+      toast.error('Download Failed', 'Please try again');
     }
   };
 
@@ -157,6 +188,8 @@ function ProjectsContent() {
     if (!user) return;
 
     try {
+      toast.info('Retrying...', 'Restarting video generation');
+
       const token = await user.getIdToken();
 
       const response = await fetch(`/api/video/retry/${projectId}`, {
@@ -178,11 +211,13 @@ function ProjectsContent() {
         p.id === projectId ? { ...p, status: 'processing' as const } : p
       ));
 
+      toast.success('Generation Restarted', 'Your video is being processed');
+
       // Redirect to video status page
       router.push(`/video/${projectId}`);
     } catch (error: any) {
       console.error('Error retrying generation:', error);
-      alert(error.message || 'Failed to retry generation. Please try again.');
+      toast.error('Retry Failed', error.message || 'Please try again');
     }
   };
 
@@ -445,6 +480,30 @@ function ProjectsContent() {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {projectToDelete && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-[24px] p-6 max-w-md w-full shadow-2xl">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Delete Project?</h3>
+            <p className="text-gray-600 mb-6">Are you sure you want to delete this project? This action cannot be undone.</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setProjectToDelete(null)}
+                className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDeleteProject}
+                className="flex-1 px-4 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

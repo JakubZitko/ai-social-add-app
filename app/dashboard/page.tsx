@@ -18,6 +18,7 @@ import {
 import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { Project } from '@/types';
+import { demoProjects } from '@/lib/data/demoData';
 
 // --- COMPONENT: AVATAR DRAWER (The "Pop Up") ---
 interface AvatarDrawerProps {
@@ -136,6 +137,7 @@ function DashboardContent() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     if (user) {
@@ -164,13 +166,29 @@ function DashboardContent() {
         completedAt: doc.data().completedAt?.toDate(),
       })) as Project[];
 
-      setProjects(projectsData);
+      // Use demo data if no projects found
+      if (projectsData.length === 0) {
+        console.log('No projects in database, using demo data');
+        setProjects(demoProjects as any);
+      } else {
+        setProjects(projectsData);
+      }
     } catch (error) {
       console.error('Error fetching projects:', error);
+      // Use demo data on error
+      console.log('Error fetching projects, using demo data');
+      setProjects(demoProjects as any);
     } finally {
       setLoading(false);
     }
   };
+
+  // Filter projects based on search query
+  const filteredProjects = projects.filter((project) => {
+    if (!searchQuery.trim()) return true;
+    const query = searchQuery.toLowerCase();
+    return project.scriptText?.toLowerCase().includes(query);
+  });
 
   const handleNewProject = () => {
     router.push('/create');
@@ -230,6 +248,8 @@ function DashboardContent() {
                 <input
                   type="text"
                   placeholder="Search projects..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10 pr-4 py-2 bg-gray-50 border-none rounded-full text-sm focus:ring-2 focus:ring-gray-200 outline-none w-64 placeholder-gray-400"
                 />
               </div>
@@ -302,23 +322,25 @@ function DashboardContent() {
                 <div className="flex items-center justify-center py-12">
                   <div className="animate-spin h-8 w-8 border-4 border-gray-900 border-t-transparent rounded-full" />
                 </div>
-              ) : projects.length === 0 ? (
+              ) : filteredProjects.length === 0 ? (
                 <div className="text-center py-12 px-6">
                   <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Video className="w-8 h-8 text-gray-400" />
                   </div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    No projects yet
+                    {searchQuery ? 'No matching projects' : 'No projects yet'}
                   </h3>
                   <p className="text-gray-500 mb-6">
-                    Create your first video to get started
+                    {searchQuery ? 'Try a different search term' : 'Create your first video to get started'}
                   </p>
-                  <button
-                    onClick={handleNewProject}
-                    className="px-6 py-2.5 bg-gray-900 text-white rounded-full text-sm font-medium hover:bg-gray-800 transition-colors"
-                  >
-                    Create First Project
-                  </button>
+                  {!searchQuery && (
+                    <button
+                      onClick={handleNewProject}
+                      className="px-6 py-2.5 bg-gray-900 text-white rounded-full text-sm font-medium hover:bg-gray-800 transition-colors"
+                    >
+                      Create First Project
+                    </button>
+                  )}
                 </div>
               ) : (
                 <table className="w-full text-left border-collapse">
@@ -340,7 +362,7 @@ function DashboardContent() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">
-                    {projects.slice(0, 5).map((project, i) => (
+                    {filteredProjects.slice(0, 5).map((project, i) => (
                       <tr
                         key={project.id}
                         className="hover:bg-gray-50/80 transition-colors group cursor-pointer"
